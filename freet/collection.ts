@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import type {HydratedDocument, Types} from 'mongoose';
 import type {Freet} from './model';
 import FreetModel from './model';
 import UserCollection from '../user/collection';
 
+type FreetCounts = 'likes' | 'reports';
 /**
  * This files contains a class that has the functionality to explore freets
  * stored in MongoDB, including adding, finding, updating, and deleting freets.
@@ -12,6 +14,16 @@ import UserCollection from '../user/collection';
  * and contains all the information in Freet. https://mongoosejs.com/docs/typescript.html
  */
 class FreetCollection {
+  /**
+   * Get a freet by its id
+   *
+   * @param freetId - id of the freet
+   * @returns the freet if it exists; null otherwise
+   */
+  static async findById(freetId: Types.ObjectId | string): Promise<HydratedDocument<Freet>> {
+    return (await FreetModel.findById(freetId)).populated('authorId');
+  }
+
   /**
    * Add a freet to the collection
    *
@@ -25,7 +37,9 @@ class FreetCollection {
       authorId,
       dateCreated: date,
       content,
-      dateModified: date
+      dateModified: date,
+      likes: 0,
+      reports: 0
     });
     await freet.save(); // Saves freet to MongoDB
     return freet.populate('authorId');
@@ -95,6 +109,19 @@ class FreetCollection {
    */
   static async deleteMany(authorId: Types.ObjectId | string): Promise<void> {
     await FreetModel.deleteMany({authorId});
+  }
+
+  /**
+   * Update freet likes and reports
+   *
+   * @param freetId freet id
+   * @param count
+   * @param change
+   */
+  static async changeCounts(freetId: Types.ObjectId | string, count: FreetCounts, change: number): Promise<void> {
+    const freet = await FreetModel.findById(freetId);
+    freet[count] += change;
+    await freet.save();
   }
 }
 
