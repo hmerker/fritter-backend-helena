@@ -333,3 +333,24 @@ This renders the `index.html` file that will be used to interact with the backen
 
 - `403` if the user is not logged in
 
+#### `GET /api/communityScore - Get the community score of the user that is currently logged-in
+
+**Returns**
+
+- The logged-in user's community score
+
+**Throws**
+
+- `403` if the user is not logged in
+
+#### `GET /api/credibility/:freetId? - Get the credibility of a freet
+
+**Returns**
+
+- The credibility of the given freet
+
+**Throws**
+
+- `403` if the user is not logged in
+- `404` if the freetId is invalid
+
