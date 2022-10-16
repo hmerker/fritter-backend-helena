@@ -333,7 +333,7 @@ This renders the `index.html` file that will be used to interact with the backen
 
 - `403` if the user is not logged in
 
-#### `GET /api/communityScore - Get the community score of the user that is currently logged-in
+#### `GET /api/communityScore` - Get the community score of the user that is currently logged-in
 
 **Returns**
 
@@ -343,7 +343,7 @@ This renders the `index.html` file that will be used to interact with the backen
 
 - `403` if the user is not logged in
 
-#### `GET /api/credibility/:freetId? - Get the credibility of a freet
+#### `GET /api/credibility/:freetId?` - Get the credibility of a freet
 
 **Returns**
 
