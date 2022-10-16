@@ -349,8 +349,8 @@ This renders the `index.html` file that will be used to interact with the backen
 
 - `403` If the user is not logged in
 - `400` If the shared freet content is empty or a stream of empty spaces
-- `404` If any of the users in `collaboratingAuthors` are not recognized users
 - `413` If the shared freet content is more than 140 characters long
+- `404` If any of the users in `collaboratingAuthors` are not recognized users
 - `413` If the `dateTimeEndEdit` is less than the `dateTimeBeginEdit`
 
 #### `DELETE /api/sharedFreets/:sharedFreetId?` - Delete an existing shared freet
