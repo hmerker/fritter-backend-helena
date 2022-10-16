@@ -225,7 +225,7 @@ This renders the `index.html` file that will be used to interact with the backen
 **Throws**
 
 - `403` if the user is not logged in
-- `403` if the user is not one of the authors of the freet (shared freet)
+- `403` if the user is not one of the authors of the freet
 - `404` if the freetId is invalid
 
 #### `PUT /api/freets/:freetId?` - Update an existing freet (includes Shared Freet concept)
@@ -244,7 +244,7 @@ This renders the `index.html` file that will be used to interact with the backen
 
 - `403` if the user is not logged in
 - `404` if the freetId is invalid
-- `403` if the user is not one of the authors of the freet (shared freet)
+- `403` if the user is not one of the authors of the freet
 - `400` if the new freet content is empty or a stream of empty spaces
 - `413` if the new freet content is more than 140 characters long
 
