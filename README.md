@@ -228,7 +228,7 @@ This renders the `index.html` file that will be used to interact with the backen
 - `403` if the user is not one of the authors of the freet
 - `404` if the freetId is invalid
 
-#### `PUT /api/freets/:freetId?` - Update an existing freet (includes Shared Freet concept)
+#### `PUT /api/freets/:freetId?` - Update an existing freet (includes Shared Freet concept & Edit concept)
 
 **Body**
 
@@ -247,6 +247,9 @@ This renders the `index.html` file that will be used to interact with the backen
 - `403` if the user is not one of the authors of the freet
 - `400` if the new freet content is empty or a stream of empty spaces
 - `413` if the new freet content is more than 140 characters long
+- `413` if it has been >= 4 hours since the freet was published and the freet is not a shared freet (edit concept)
+- `413` if >= 10 characters of the freet have already been changed and the freet is not a shared freet (edit concept)
+- `413` if the freet is a shared freet and the current time is < `dateTimeBeginEdit` or >= `dateTimeEndEdit`
 
 #### `POST /api/users/session` - Sign in user
 
