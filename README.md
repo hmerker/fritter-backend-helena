@@ -197,6 +197,7 @@ This renders the `index.html` file that will be used to interact with the backen
 **Body**
 
 - `content` _{string}_ - The content of the freet
+- `credibleSource` _{string}_ - A source may be included to add credibility
 
 **Returns**
 
@@ -226,6 +227,7 @@ This renders the `index.html` file that will be used to interact with the backen
 **Body**
 
 - `content` _{string}_ - The new content of the freet
+- `credibleSource` _{string}_ - A source may be included to add credibility
 
 **Returns**
 
@@ -336,6 +338,7 @@ This renders the `index.html` file that will be used to interact with the backen
 **Body**
 
 - `content` _{string}_ - The content of the shared freet
+- `credibleSource` _{string}_ - A source may be included to add credibility
 - `collaboratingAuthors` _{Users}_ - An array of authors who can edit but did not create the shared freet
 - `dateTimeBeginEdit` _{DateTime}_ - Earliest time that edits can occur
 - `dateTimeEndEdit` _{DateTime}_ - Latest time that edits can occur
@@ -370,6 +373,7 @@ This renders the `index.html` file that will be used to interact with the backen
 **Body**
 
 - `content` _{string}_ - The new content of the shared freet
+- `credibleSource` _{string}_ - A source may be included to add credibility
 
 **Returns**
 
