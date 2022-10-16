@@ -346,17 +346,55 @@ This renders the `index.html` file that will be used to interact with the backen
 
 - `403` if the user is not logged in
 
-#### `GET /api/credibility?freetId=FREETID` - Get the credibility of a freet
+#### `GET /api/credibility?itemId=ITEMID` - Get the credibility of an item
 
 **Returns**
 
-- The credibility of the given freet
+- The credibility of the given item
 
 **Throws**
 
 - `403` if the user is not logged in
-- `404` if the freetId is invalid
-- `400` if `freetId` is not given
+- `404` if the itemId is invalid
+- `400` if `itemId` is not given
+
+#### `GET /api/like?itemId=ITEMID` - Get whether a user has liked the current item
+
+**Returns**
+
+- True if user has liked the current item; false otherwise
+
+**Throws**
+
+- `403` if the user is not logged in
+- `404` if the `itemId` is invalid
+- `400` if `itemId` is not given
+
+#### `POST /api/like` - Create a new like entry
+
+**Body**
+- `itemId` _{string}_ - the id of the item that the user wants to like
+
+**Returns**
+
+- The new like entry
+
+**Throws**
+
+- `403` if the user is not logged in
+- `404` if the `itemId` has already been liked
+
+#### `DELETE /api/like?itemId=ITEMID` - Delete a like
+
+**Returns**
+
+- A success message
+
+**Throws**
+
+- `403` if the user is not logged in
+- `404` if the `itemId` is invalid
+- `400` if `itemId` is not given
 
 #### `GET /api/follower?userId=USERID` - Get a user's follower information
 
@@ -374,7 +412,7 @@ This renders the `index.html` file that will be used to interact with the backen
 #### `POST /api/follower` - Follow a specified user
 
 **Body**
-- userFollowed _{string}_ - username of the user that the given user would like to follow
+- `userFollowed` _{string}_ - username of the user that the given user would like to follow
 
 **Returns**
 
