@@ -355,7 +355,7 @@ This renders the `index.html` file that will be used to interact with the backen
 **Throws**
 
 - `403` if the user is not logged in
-- `404` if the itemId is invalid
+- `404` if the `itemId` is invalid
 - `400` if `itemId` is not given
 
 #### `GET /api/like?itemId=ITEMID` - Get whether a user has liked the current item
