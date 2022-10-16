@@ -383,7 +383,7 @@ This renders the `index.html` file that will be used to interact with the backen
 
 - `403` if the user is not logged in
 - `404` if the `itemId` does not exist
-- `413` if the `itemId` has already been liked
+- `404` if the `itemId` has already been liked
 
 #### `DELETE /api/like?itemId=ITEMID` - Delete a like
 
