@@ -8,6 +8,7 @@
   <script src="/scripts/freet.js"></script>
   <script src="/scripts/user.js"></script>
   <script src="/scripts/index.js"></script>
+  <script src="/scripts/like.js"></script>
 </head>
 
 <body>
@@ -19,6 +20,34 @@
     <section id="operations-container">
       <h2>Operations:</h2>
       <div class="scrollbox">
+
+        <h2>Likes</h2>
+        <form id="create-like">
+          <h3>Create Like</h3>
+          <div>
+            <label for="itemId">Item ID:</label>
+            <input id="itemId" name="itemId">
+          </div>
+          <input type="submit" value="Like">
+        </form>
+        <form id="view-like">
+          <h3>View if user has liked the item</h3>
+          <div>
+            <label for="itemId">Item ID:</label>
+            <input id="itemId" name="itemId">
+          </div>
+          <input type="submit" value="Check">
+        </form>
+        <form id="delete-like">
+          <h3>Delete Like</h3>
+          <div>
+            <label for="itemId">Item ID:</label>
+            <input id="itemId" name="itemId">
+          </div>
+          <input type="submit" value="Delete Like">
+        </form>
+        <hr />
+
         <form id="create-user">
           <h3>Create User</h3>
           <div>
