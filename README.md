@@ -276,12 +276,15 @@ This renders the `index.html` file that will be used to interact with the backen
 
 - `403` if user is not logged in
 
-#### `POST /api/users` - Create an new user account
+#### `POST /api/users` - Create an new user account (includes Company Account concept)
 
 **Body**
 
 - `username` _{string}_ - The user's username
 - `password` _{string}_ - The user's password
+- `companyOfEmployment` _{string}_ - The username of the user's company of employemnt
+- `jobTitle` _{string}_ - The user's job title
+- `company` _{boolean}_ - Whether or not the user is a company (company account)
 
 **Returns**
 
@@ -293,13 +296,18 @@ This renders the `index.html` file that will be used to interact with the backen
 - `403` if there is a user already logged in
 - `400` if username or password is in the wrong format
 - `409` if username is already in use
+- `404` if the 'companyOfEmployment` is not a valid username of any company
+- `413` if only 1 of `companyOfEmployment` and `jobTitle` are populated (a user must specify both or neither)
+- `413` if `companyOfEmployment` or `jobTitle` are populated and `company` is true (a user cannot be both a company and an employee)
 
-#### `PUT /api/users` - Update a user's profile
+#### `PUT /api/users` - Update a user's profile (includes Company Account concept)
 
 **Body** _(no need to add fields that are not being changed)_
 
 - `username` _{string}_ - The user's username
 - `password` _{string}_ - The user's password
+- `companyOfEmployment` _{string}_ - The username of the user's company of employemnt
+- `jobTitle` _{string}_ - The user's job title
 
 **Returns**
 
@@ -311,6 +319,9 @@ This renders the `index.html` file that will be used to interact with the backen
 - `403` if the user is not logged in
 - `400` if username or password is in the wrong format
 - `409` if the username is already in use
+- `404` if the 'companyOfEmployment` is not a valid username of any company
+- `413` if only 1 of `companyOfEmployment` and `jobTitle` are populated (a user must specify both or neither)
+- `413` if the `company` field is true and `companyOfEmployment` or `jobTitle` are not empty (a user cannot be both a company and an employee)
 
 #### `DELETE /api/users` - Delete user
 
