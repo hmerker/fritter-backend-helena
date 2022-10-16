@@ -214,7 +214,7 @@ This renders the `index.html` file that will be used to interact with the backen
 - `413` If the freet content is more than 140 characters long
 - `404` If any of the usernames in `collaboratingAuthors` are not recognized usernames of any users
 - `413` If the `dateTimeBeginEdit` is later than `dateTimeEndEdit`
-- `413` If only 1 or 2 of the 'collaboratingAuthors`, `dateTimeBeginEdit`, and `dateTimeEndEdit` fields are populated (either all or none of those fields can be included so a freet is either a shared freet or not a shared freet)
+- `413` If only 1 or 2 of the `collaboratingAuthors`, `dateTimeBeginEdit`, and `dateTimeEndEdit` fields are populated (either all or none of those fields can be included so a freet is either a shared freet or not a shared freet)
 
 #### `DELETE /api/freets/:freetId?` - Delete an existing freet (includes Shared Freet concept)
 
