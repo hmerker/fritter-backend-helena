@@ -313,3 +313,73 @@ This renders the `index.html` file that will be used to interact with the backen
 **Throws**
 
 - `403` if the user is not logged in
+
+#### `GET /api/sharedFreets` - Get all the shared freets
+
+**Returns**
+
+- An array of all shared freets sorted in descending order by date modified
+
+#### `GET /api/sharedFreets?author=USERNAME` - Get freets by author
+
+**Returns**
+
+- An array of shared freets where the user with username `author` is an author
+
+**Throws**
+
+- `400` if `author` is not given
+- `404` if `author` is not a recognized username of any user
+
+#### `POST /api/sharedFreets` - Create a new shared freet
+
+**Body**
+
+- `content` _{string}_ - The content of the shared freet
+- `collaboratingAuthors` _{Users}_ - An array of authors who can edit but did not create the shared freet
+- `dateTimeBeginEdit` _{DateTime}_ - Earliest time that edits can occur
+- `dateTimeEndEdit` _{DateTime}_ - Latest time that edits can occur
+
+**Returns**
+
+- A success message
+- A object with the created shared freet
+
+**Throws**
+
+- `403` If the user is not logged in
+- `400` If the shared freet content is empty or a stream of empty spaces
+- `404` If any of the users in `collaboratingAuthors` are not recognized users
+- `413` If the shared freet content is more than 140 characters long
+- `413` If the `dateTimeEndEdit` is less than the `dateTimeBeginEdit`
+
+#### `DELETE /api/sharedFreets/:sharedFreetId?` - Delete an existing shared freet
+
+**Returns**
+
+- A success message
+
+**Throws**
+
+- `403` if the user is not logged in
+- `403` if the user is not one of the authors of the shared freet
+- `404` if the sharedFreetId is invalid
+
+#### `PUT /api/sharedFreets/:sharedFreetId?` - Update an existing shared freet
+
+**Body**
+
+- `content` _{string}_ - The new content of the shared freet
+
+**Returns**
+
+- A success message
+- An object with the updated shared freet
+
+**Throws**
+
+- `403` if the user is not logged in
+- `404` if the sharedFreetId is invalid
+- `403` if the user is not one of the authors of the shared freet
+- `400` if the new shared freet content is empty or a stream of empty spaces
+- `413` if the new shared freet content is more than 140 characters long
