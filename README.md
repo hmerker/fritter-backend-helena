@@ -382,9 +382,49 @@ This renders the `index.html` file that will be used to interact with the backen
 **Throws**
 
 - `403` if the user is not logged in
-- `404` if the `itemId` has already been liked
+- `404` if the `itemId` does not exist
+- `413` if the `itemId` has already been liked
 
 #### `DELETE /api/like?itemId=ITEMID` - Delete a like
+
+**Returns**
+
+- A success message
+
+**Throws**
+
+- `403` if the user is not logged in
+- `404` if the `itemId` is invalid
+- `400` if `itemId` is not given
+
+#### `GET /api/report?itemId=ITEMID` - Get whether a user has reported the current item
+
+**Returns**
+
+- True if user has reported the current item; false otherwise
+
+**Throws**
+
+- `403` if the user is not logged in
+- `404` if the `itemId` is invalid
+- `400` if `itemId` is not given
+
+#### `POST /api/report` - Create a new report entry
+
+**Body**
+- `itemId` _{string}_ - the id of the item that the user wants to report
+
+**Returns**
+
+- The new report entry
+
+**Throws**
+
+- `403` if the user is not logged in
+- `404` if the `itemId` does not exist
+- `413` if the `itemId` has already been reported
+
+#### `DELETE /api/report?itemId=ITEMID` - Delete a report
 
 **Returns**
 
