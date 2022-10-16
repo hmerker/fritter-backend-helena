@@ -346,7 +346,7 @@ This renders the `index.html` file that will be used to interact with the backen
 
 - `403` if the user is not logged in
 
-#### `GET /api/credibility/:freetId?` - Get the credibility of a freet
+#### `GET /api/credibility?freetId=FREETID` - Get the credibility of a freet
 
 **Returns**
 
@@ -356,4 +356,50 @@ This renders the `index.html` file that will be used to interact with the backen
 
 - `403` if the user is not logged in
 - `404` if the freetId is invalid
+- `400` if `freetId` is not given
+
+#### `GET /api/follower?userId=USERID` - Get a user's follower information
+
+**Returns**
+
+- The given user's number of followers
+- The number of users that the given user is following
+
+**Throws**
+
+- `403` if the user is not logged in
+- `404` if the `userId` is invalid
+- `400` if `userId` is not given
+
+#### `POST /api/follower` - Follow a specified user
+
+**Body**
+- userFollowed _{string}_ - username of the user that the given user would like to follow
+
+**Returns**
+
+- A success message
+- A new follower entry
+
+**Throws**
+
+- `403` if the user is not logged in
+- `404` if `userFollowed` is invalid
+- `413` if the given user already follows `userFollowed`
+
+#### `DELETE /api/follower?followerId=FOLLOWERID` - Delete a follower entry
+
+**Returns**
+
+- A success message
+
+**Throws**
+
+- `403` if the user is not logged in
+- `400` if `followerId` is not given
+
+
+
+
+
 
