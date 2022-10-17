@@ -1,4 +1,3 @@
-
 function viewLikeByItem(fields) {
   fetch(`/api/likes?itemId=${fields.itemId}`)
     .then(showResponse)

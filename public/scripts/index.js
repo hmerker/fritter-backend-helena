@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 // Show an object on the screen.
 function showObject(obj) {
   const pre = document.getElementById('response');
