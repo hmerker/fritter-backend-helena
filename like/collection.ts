@@ -47,7 +47,7 @@ class LikeCollection {
   }
 
   /**
-   * Delete a user's Like entries
+   * Delete a user's like entries
    *
    * @returns true if deletion was successful, otherwise false
    */
