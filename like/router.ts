@@ -53,8 +53,8 @@ router.delete(
     userValidator.isUserLoggedIn, likeValidator.isParamGiven("params"),
   ],
   async (req: Request, res: Response) => {
-    const parentContentId = req.params.parentContentId;
     const userId = req.session.userId as string;
+    const parentContentId = req.params.parentContentId;
     await LikeCollection.deleteOne(userId, parentContentId);
     res.status(200).json({message: "Your like was deleted successfully.",});
   }

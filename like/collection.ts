@@ -21,15 +21,15 @@ class LikeCollection {
    */
   static async addOne(userId: Types.ObjectId | string, parentContentId: Types.ObjectId | string, parentContentType: "freet" | "comment"
   ): Promise<HydratedDocument<Like>> {
-    const Like = new LikeModel({userId, parentContentId, parentContentType,});
+    const like = new LikeModel({userId, parentContentId, parentContentType,});
     if (parentContentType === "freet"){
       FreetCollection.updateCounts(parentContentId, "likes", 1);
     }
     else if (parentContentType === "comment"){
       CommentCollection.updateCounts(parentContentId, "likes", 1);
     }
-    await Like.save();
-    return Like.populate("userId");
+    await like.save();
+    return like.populate("userId");
   }
 
   /**

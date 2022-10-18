@@ -1,7 +1,7 @@
 import type {Request, Response, NextFunction} from "express";
 import FreetCollection from "../freet/collection";
 import CommentCollection from "../comment/collection";
-import LikeCollection from "./collection";
+import ReportCollection from "./collection";
 
 /**
  * Check if parentContentId is given
@@ -34,14 +34,14 @@ export const doesParentContentExist = (reqInfoType: "body" | "query") => {
 };
 
 /**
- * Check if duplicate like exists
+ * Check if duplicate report exists
  */
-export const doesDuplicateLikeExist = () => {
+export const doesDuplicateReportExist = () => {
   return async (req: Request, res: Response, next: NextFunction) => {
     const {parentContentId} = req.body;
-    const doesLikeExist = await LikeCollection.findByUserId(req.session.userId, parentContentId);
-    if (doesLikeExist) {
-      return res.status(404).json({ message: 'User has already liked this item.'});
+    const doesReportExist = await ReportCollection.findByUserId(req.session.userId, parentContentId);
+    if (doesReportExist) {
+      return res.status(404).json({ message: 'User has already reported this item.'});
     }
 
     next();
