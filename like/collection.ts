@@ -49,7 +49,7 @@ class LikeCollection {
    * Delete like
    *
    * @param {string} userId - user if
-   * @param {string} parentId - content if
+   * @param {string} parentContentId - content if
    * @return {Promise<Boolean>} - whether or not the like has been deleted
    */
   static async deleteOne(userId: Types.ObjectId | string, parentContentId: Types.ObjectId | string

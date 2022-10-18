@@ -18,7 +18,7 @@ router.get(
   ],
   async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.session.userId as string;
-    const doesExist = await LikeCollection.findByUserId(userId, req.query.parentId as string);
+    const doesExist = await LikeCollection.findByUserId(userId, req.query.parentContentId as string);
     res.status(200).json({doesExist});
   }
 );
