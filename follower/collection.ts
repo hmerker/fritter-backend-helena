@@ -66,7 +66,7 @@ class FollowerCollection {
    * @returns - whether or not operation was successful
    */
   static async deleteMany(userId: Types.ObjectId | string): Promise<boolean> {
-    const deletedEntries = await FollowerModel.deleteMany({ follower: userId });
+    const deletedEntries = await FollowerModel.deleteMany({follower: userId});
     return deletedEntries !== null;
   }
 }
