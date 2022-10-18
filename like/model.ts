@@ -1,17 +1,19 @@
-import type {Types} from 'mongoose';
-import {Schema, model} from 'mongoose';
-import type {User} from '../user/model';
+import type {Types} from "mongoose";
+import {Schema, model} from "mongoose";
+import type {User} from "../user/model";
 
 export type Like = {
   _id: Types.ObjectId;
   userId: Types.ObjectId;
-  itemId: Types.ObjectId;
+  parentContentId: Types.ObjectId;
+  parentContentType: "freet" | "comment";
 };
 
 export type PopulatedLike = {
   _id: Types.ObjectId;
   userId: User;
-  itemId: Types.ObjectId;
+  parentContentId: Types.ObjectId;
+  parentContentType: "freet" | "comment";
 };
 
 const LikeSchema = new Schema<Like>({
@@ -19,14 +21,16 @@ const LikeSchema = new Schema<Like>({
     // Use Types.ObjectId outside of the schema
     type: Schema.Types.ObjectId,
     required: true,
-    ref: 'User'
+    ref: "User",
   },
-  itemId: {
+  parentContentId: {
     type: Schema.Types.ObjectId,
-    required: true
-  }
+    required: true,
+  },
+  parentContentType: {
+    type: String,
+    required: true,
+  },
 });
 
-const LikeModel = model<Like>('Like', LikeSchema);
-export default LikeModel;
-
+export default model<Like>("Like", LikeSchema);

@@ -1,6 +1,5 @@
 import type {HydratedDocument} from "mongoose";
 import type {Comment, PopulatedComment} from "./model";
-import {Types} from "mongoose";
 import moment from "moment";
 
 type CommentResponse = {
@@ -10,12 +9,6 @@ type CommentResponse = {
   content: string;
   likes: number;
   reports: number;
-};
-
-export type DeleteManyHelper = {
-  parentContentId?: Types.ObjectId | string;
-  authorId?: Types.ObjectId | string;
-  userId?: Types.ObjectId | string;
 };
 
 /**

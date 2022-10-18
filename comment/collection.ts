@@ -3,7 +3,12 @@ import CommunityScoreCollection from "../community_score/collection";
 import type {HydratedDocument, Types} from "mongoose";
 import type {Comment} from "./model";
 import CommentModel from "./model";
-import type {DeleteManyHelper} from "./util";
+
+export type DeleteManyHelper = {
+  authorId?: Types.ObjectId | string;
+  userId?: Types.ObjectId | string;
+  parentContentId?: Types.ObjectId | string;
+};
 
 class CommentCollection {
   /**
@@ -23,7 +28,7 @@ class CommentCollection {
     });
     await comment.save();
     if (parentContentType === "freet") {
-      FreetCollection.incrementStats(parentContentId, "comments", 1);
+      FreetCollection.updateCounts(parentContentId, "comments", 1);
     }
     await CommunityScoreCollection.updateOne(authorId, true, content);
     return comment.populate("authorId");
@@ -77,14 +82,14 @@ class CommentCollection {
     const deletedComment = await CommentModel.findOneAndDelete({_id: commentId,});
     const parentContentType = deletedComment?.parentContentType;
     if (parentContentType === "freet") {
-      FreetCollection.incrementStats(deletedComment.parentContentId, "comments", -1);
+      FreetCollection.updateCounts(deletedComment.parentContentId, "comments", -1);
     }
     deletedComment && (await CommunityScoreCollection.updateOne(deletedComment.authorId, false, deletedComment.content));
     return deletedComment !== null;
   }
 
   /**
-   * Delete all of a user's comments
+   * Delete many comments
    */
   static async deleteMany(filter: DeleteManyHelper): Promise<void> {
     await CommentModel.deleteMany(filter);

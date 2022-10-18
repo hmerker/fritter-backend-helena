@@ -1,58 +1,74 @@
-import type {HydratedDocument, Types} from 'mongoose';
-import type {Like} from './model';
-import LikeModel from './model';
-import FreetCollection from '../freet/collection';
+import type {HydratedDocument, Types} from "mongoose";
+import type {Like} from "./model";
+import LikeModel from "./model";
+import CommentCollection from "../comment/collection";
+import FreetCollection from "../freet/collection";
+
+export type DeleteManyHelper = {
+  authorId?: Types.ObjectId | string;
+  userId?: Types.ObjectId | string;
+  parentContentId?: Types.ObjectId | string;
+};
 
 class LikeCollection {
   /**
-   * Add a like to the collection
+   * Add a Like
    *
    * @param {string} userId - user id
-   * @param {string} itemId - item id
-   * @return {Promise<HydratedDocument<Like>>}
+   * @param {string} parentContentId - parent id
+   * @param {string} parentContentType - freet or comment
+   * @return {Promise<HydratedDocument<Like>>} - new like
    */
-  static async addOne(userId: Types.ObjectId | string, itemId: Types.ObjectId | string): Promise<HydratedDocument<Like>> {
-    const like = new LikeModel({
-      userId,
-      itemId
-    });
-    await FreetCollection.changeCounts(itemId, 'likes', 1);
-    await like.save();
-    return like.populate('userId');
+  static async addOne(userId: Types.ObjectId | string, parentContentId: Types.ObjectId | string, parentContentType: "freet" | "comment"
+  ): Promise<HydratedDocument<Like>> {
+    const Like = new LikeModel({userId, parentContentId, parentContentType,});
+    if (parentContentType === "freet"){
+      FreetCollection.updateCounts(parentContentId, "likes", 1);
+    }
+    else if (parentContentType === "comment"){
+      CommentCollection.updateCounts(parentContentId, "likes", 1);
+    }
+    await Like.save();
+    return Like.populate("userId");
   }
 
   /**
-   * Find whether a user has liked an item
+   * Get if user has liked content
    *
    * @param {string} userId - user id
-   * @param {string} itemId - item id
+   * @param {string} parentContentId - content id
    *
    * @return {Promise<boolean>}
    */
-  static async findOneByUserId(userId: Types.ObjectId | string, itemId: Types.ObjectId | string): Promise<boolean> {
-    return (await LikeModel.findOne({userId, itemId})) !== null;
+  static async findByUserId(userId: Types.ObjectId | string, parentContentId: Types.ObjectId | string
+  ): Promise<boolean> {
+    return (await LikeModel.findOne({userId, parentContentId})) !== null;
   }
 
   /**
-   * Delete a like
+   * Delete like
    *
-   * @param {string} userId - user id
-   * @param {string} parentId - like id
-   * @return {Promise<Boolean>}
+   * @param {string} userId - user if
+   * @param {string} parentId - content if
+   * @return {Promise<Boolean>} - whether or not the like has been deleted
    */
-  static async deleteOne(userId: Types.ObjectId | string, itemId: Types.ObjectId | string): Promise<boolean> {
-    const deletedLike = await LikeModel.findOneAndDelete({userId, itemId});
-    await FreetCollection.changeCounts(deletedLike.itemId, 'likes', -1);
+  static async deleteOne(userId: Types.ObjectId | string, parentContentId: Types.ObjectId | string
+  ): Promise<boolean> {
+    const deletedLike = await LikeModel.findOneAndDelete({userId,parentContentId});
+    if (deletedLike.parentContentType === "freet"){
+      deletedLike !== null && FreetCollection.updateCounts(deletedLike.parentContentId, "likes", -1);
+    }
+    else if (deletedLike.parentContentType === "comment"){
+      deletedLike !== null && CommentCollection.updateCounts(deletedLike.parentContentId, "likes", -1);
+    }
     return deletedLike !== null;
   }
 
   /**
-   * Delete a user's like entries
-   *
-   * @returns true if deletion was successful, otherwise false
+   * Delete many like entries
    */
-  static async deleteMany(itemId: Types.ObjectId | string): Promise<boolean> {
-    const deleted = await LikeModel.deleteMany({itemId});
+  static async deleteMany(filter: DeleteManyHelper): Promise<boolean> {
+    const deleted = await LikeModel.deleteMany(filter);
     return deleted !== null;
   }
 }

@@ -1,83 +1,62 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable prefer-destructuring */
-import type {NextFunction, Request, Response} from 'express';
-import express from 'express';
-import * as userMiddleware from '../user/middleware';
-import LikeCollection from './collection';
-import * as middleware from './middleware';
+import type {NextFunction, Request, Response} from "express";
+import express from "express";
+import * as userValidator from "../user/middleware";
+import LikeCollection from "./collection";
+import * as likeValidator from "./middleware";
 
 const router = express.Router();
 
 /**
- * Check if user has liked an item.
+ * Check if user has liked content
  *
- * @name GET /api/like?itemId=id
- *
- * @return {boolean} - true if user liked item, false otherwise
- * @throws {403} - if user is not logged in
- * @throws {404} - if itemId is invalid
- * @throws {400} - if itemId is not given
- *
+ * @name GET /api/likes?parentContentId=id
  */
 router.get(
-  '/:itemId?',
+  "/:parentContentId?",
   [
-    userMiddleware.isUserLoggedIn,
-    middleware.isItemIdGiven('query'),
-    middleware.doesItemIdExist('query')
+    userValidator.isUserLoggedIn, likeValidator.isParamGiven("query"), likeValidator.doesParentContentExist("query")
   ],
   async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.session.userId as string;
-    const exists = await LikeCollection.findOneByUserId(userId, req.query.itemId as string);
-    res.status(200).json({exists});
+    const doesExist = await LikeCollection.findByUserId(userId, req.query.parentId as string);
+    res.status(200).json({doesExist});
   }
 );
 
 /**
- * Create a like.
+ * Create like
  *
  * @name POST /api/likes
- *
- * @return {HydratedDocument<Like>} - The created like
- * @throws {403} - If the user is not logged in
- * @throws {404} - if itemId does not exist
- * @throws {404} - if the itemId has already been liked
  */
 router.post(
-  '/',
+  "/",
   [
-    userMiddleware.isUserLoggedIn,
-    middleware.doesItemIdExist('body'),
-    middleware.alreadyLiked
+    userValidator.isUserLoggedIn, likeValidator.doesDuplicateLikeExist(), 
+    likeValidator.isParentContentTypeValid(), likeValidator.doesParentContentExist("body"),
   ],
   async (req: Request, res: Response) => {
     const userId = req.session.userId as string;
-    const {itemId} = req.body;
-    const like = await LikeCollection.addOne(userId, itemId);
-    res.status(201).json({message: 'You liked the item.', like});
+    const {parentContentId, parentContentType} = req.body;
+    const newLike = await LikeCollection.addOne(userId, parentContentId, parentContentType);
+    res.status(201).json({message: "You liked the content successfully.", newLike});
   }
 );
 
 /**
- * Delete a like.
+ * Delete like
  *
- * @name DELETE /api/likes/:itemId
- *
- * @throws {403} - if user is not logged in
- * @throws {404} - if itemId is invalid
- * @throws {400} - if itemId is not given
+ * @name DELETE /api/likes/:id
  */
 router.delete(
-  '/:itemId?',
+  "/:parentContentId?",
   [
-    userMiddleware.isUserLoggedIn,
-    middleware.isItemIdGiven('params')
+    userValidator.isUserLoggedIn, likeValidator.isParamGiven("params"),
   ],
   async (req: Request, res: Response) => {
-    const itemId = req.params.itemId;
+    const parentContentId = req.params.parentContentId;
     const userId = req.session.userId as string;
-    await LikeCollection.deleteOne(userId, itemId);
-    res.status(200).json({message: 'Your like was deleted.'});
+    await LikeCollection.deleteOne(userId, parentContentId);
+    res.status(200).json({message: "Your like was deleted successfully.",});
   }
 );
 
