@@ -1,29 +1,21 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-import type {HydratedDocument, Types} from 'mongoose';
-import type {Freet} from './model';
-import FreetModel from './model';
-import UserCollection from '../user/collection';
+import type {HydratedDocument, Types} from "mongoose";
+import type {Freet} from "./model";
+import FreetModel from "./model";
+import UserCollection from "../user/collection";
+import CommunityScoreCollection from "../community_score/collection";
 
-type FreetCounts = 'likes' | 'reports';
-/**
- * This files contains a class that has the functionality to explore freets
- * stored in MongoDB, including adding, finding, updating, and deleting freets.
- * Feel free to add additional operations in this file.
- *
- * Note: HydratedDocument<Freet> is the output of the FreetModel() constructor,
- * and contains all the information in Freet. https://mongoosejs.com/docs/typescript.html
- */
 class FreetCollection {
   /**
-   * Get a freet by its id
+   * get a freet by id
    *
    * @param freetId - id of the freet
    * @returns the freet if it exists; null otherwise
    */
-  static async findById(freetId: Types.ObjectId | string): Promise<HydratedDocument<Freet>> {
-    return (await FreetModel.findById(freetId)).populated('authorId');
+  static async findById(
+    freetId: Types.ObjectId | string): Promise<HydratedDocument<Freet>> {
+    return (await FreetModel.findById(freetId)).populated("authorId");
   }
-
+  
   /**
    * Add a freet to the collection
    *
@@ -34,15 +26,12 @@ class FreetCollection {
   static async addOne(authorId: Types.ObjectId | string, content: string): Promise<HydratedDocument<Freet>> {
     const date = new Date();
     const freet = new FreetModel({
-      authorId,
-      dateCreated: date,
-      content,
-      dateModified: date,
-      likes: 0,
-      reports: 0
+      authorId, dateCreated: date, content, dateModified: date,
+      comments: 0, likes: 0, reports: 0
     });
     await freet.save(); // Saves freet to MongoDB
-    return freet.populate('authorId');
+    await CommunityScoreCollection.updateOne(authorId, true, content);
+    return freet.populate("authorId");
   }
 
   /**
@@ -52,7 +41,7 @@ class FreetCollection {
    * @return {Promise<HydratedDocument<Freet>> | Promise<null> } - The freet with the given freetId, if any
    */
   static async findOne(freetId: Types.ObjectId | string): Promise<HydratedDocument<Freet>> {
-    return FreetModel.findOne({_id: freetId}).populate('authorId');
+    return FreetModel.findOne({ _id: freetId }).populate("authorId");
   }
 
   /**
@@ -62,7 +51,7 @@ class FreetCollection {
    */
   static async findAll(): Promise<Array<HydratedDocument<Freet>>> {
     // Retrieves freets and sorts them from most to least recent
-    return FreetModel.find({}).sort({dateModified: -1}).populate('authorId');
+    return FreetModel.find({}).sort({ dateModified: -1 }).populate("authorId");
   }
 
   /**
@@ -73,7 +62,7 @@ class FreetCollection {
    */
   static async findAllByUsername(username: string): Promise<Array<HydratedDocument<Freet>>> {
     const author = await UserCollection.findOneByUsername(username);
-    return FreetModel.find({authorId: author._id}).populate('authorId');
+    return FreetModel.find({authorId: author._id}).populate("authorId");
   }
 
   /**
@@ -88,7 +77,7 @@ class FreetCollection {
     freet.content = content;
     freet.dateModified = new Date();
     await freet.save();
-    return freet.populate('authorId');
+    return freet.populate("authorId");
   }
 
   /**
@@ -98,7 +87,8 @@ class FreetCollection {
    * @return {Promise<Boolean>} - true if the freet has been deleted, false otherwise
    */
   static async deleteOne(freetId: Types.ObjectId | string): Promise<boolean> {
-    const freet = await FreetModel.deleteOne({_id: freetId});
+    const freet = await FreetModel.findOneAndDelete({_id: freetId});
+    freet && (await CommunityScoreCollection.updateOne(freet.authorId, false, freet.content));
     return freet !== null;
   }
 
@@ -112,13 +102,13 @@ class FreetCollection {
   }
 
   /**
-   * Update freet likes and reports
+   * Update freet comments, likes, and reports counts
    *
-   * @param freetId freet id
-   * @param count
-   * @param change
+   * @param freetId - id of freet
+   * @param count to increment
+   * @param change number
    */
-  static async changeCounts(freetId: Types.ObjectId | string, count: FreetCounts, change: number): Promise<void> {
+  static async updateCounts(freetId: Types.ObjectId | string, count: "comments" | "likes" | "reports", change: number): Promise<void> {
     const freet = await FreetModel.findById(freetId);
     freet[count] += change;
     await freet.save();
