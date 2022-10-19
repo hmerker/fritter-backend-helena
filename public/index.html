@@ -7,8 +7,12 @@
   <link rel="stylesheet" href="/stylesheets/style.css">
   <script src="/scripts/freet.js"></script>
   <script src="/scripts/user.js"></script>
-  <script src="/scripts/index.js"></script>
+  <script src="/scripts/comment.js"></script>
+  <script src="/scripts/community_score.js"></script>
+  <script src="/scripts/follower.js"></script>
   <script src="/scripts/like.js"></script>
+  <script src="/scripts/report.js"></script>
+  <script src="/scripts/index.js"></script>
 </head>
 
 <body>
@@ -21,33 +25,141 @@
       <h2>Operations:</h2>
       <div class="scrollbox">
 
+        <!-- comments -->
+        <form id="create-comment">
+          <h3>Create Comment</h3>
+          <div>
+            <label for="parentContentId">Id of content to comment on:</label>
+            <input id="parentContentId" name="parentContentId">
+          </div>
+          <div>
+            <label for="parentContentType">Content type (please input "freet" or "comment"):</label>
+            <input id="parentContentType" name="parentContentType">
+          </div>
+          <div>
+            <label for="content">Comment content:</label>
+            <input id="content" name="content">
+          </div>
+          <input type="submit" value="Create Comment">
+        </form>
+
+        <form id="view-comments-by-content">
+          <h3>View all comments for a piece of content</h3>
+          <div>
+            <label for="parentContentId">Id of content:</label>
+            <input id="parentContentId" name="parentContentId">
+          </div>
+          <input type="submit" value="View All Comments">
+        </form>
+
+        <form id="delete-comment">
+          <h3>Delete Comment</h3>
+          <div>
+            <label for="id">Comment id:</label>
+            <input id="id" name="id">
+          </div>
+          <input type="submit" value="Delete Comment">
+        </form>
+
+        <!-- community scores -->
+        <form id="get-community-score">
+          <h3>Check the community score of the current user</h3>
+          <input type="submit" value="Check Community Score">
+        </form>
+
+        <!-- followers -->
+        <form id="create-follower">
+          <h3>Create Follower</h3>
+          <div>
+            <label for="userFollowed">Id of user to follow:</label>
+            <input id="userFollowed" name="userFollowed">
+          </div>
+          <input type="submit" value="Follow">
+        </form>
+
+        <form id="view-follower-counts">
+          <h3>Check number of users followed and number of users following</h3>
+          <div>
+            <label for="userId">User id to check:</label>
+            <input id="userId" name="userId">
+          </div>
+          <input type="submit" value="Check Follower Counts">
+        </form>
+
+        <form id="delete-follower">
+          <h3>Delete Follower</h3>
+          <div>
+            <label for="id">Id of user to unfollow:</label>
+            <input id="id" name="id">
+          </div>
+          <input type="submit" value="Unfollow">
+        </form>
+
+        <!-- likes -->
         <form id="create-like">
           <h3>Create Like</h3>
           <div>
-            <label for="itemId">Item ID:</label>
-            <input id="itemId" name="itemId">
+            <label for="parentContentId">Id of content to like:</label>
+            <input id="parentContentId" name="parentContentId">
+          </div>
+          <div>
+            <label for="parentContentType">Content type (please input "freet" or "comment"):</label>
+            <input id="parentContentType" name="parentContentType">
           </div>
           <input type="submit" value="Like">
         </form>
-        
-        <form id="view-like">
-          <h3>View if user has liked the item</h3>
+
+        <form id="view-likes-by-content">
+          <h3>Check if current user has liked a piece of content</h3>
           <div>
-            <label for="itemId">Item ID:</label>
-            <input id="itemId" name="itemId">
+            <label for="parentContentId">Id of content:</label>
+            <input id="parentContentId" name="parentContentId">
           </div>
-          <input type="submit" value="View">
+          <input type="submit" value="Check Like">
         </form>
-        
+
         <form id="delete-like">
           <h3>Delete Like</h3>
           <div>
-            <label for="id">Item ID:</label>
+            <label for="id">Id of content that was liked:</label>
             <input id="id" name="id">
           </div>
           <input type="submit" value="Delete Like">
         </form>
 
+        <!-- reports -->
+        <form id="create-report">
+          <h3>Create Report</h3>
+          <div>
+            <label for="parentContentId">Id of content to report:</label>
+            <input id="parentContentId" name="parentContentId">
+          </div>
+          <div>
+            <label for="parentContentType">Content type (please input "freet" or "comment"):</label>
+            <input id="parentContentType" name="parentContentType">
+          </div>
+          <input type="submit" value="Report">
+        </form>
+
+        <form id="view-reports-by-content">
+          <h3>Check if current user has reported a piece of content</h3>
+          <div>
+            <label for="parentContentId">Id of content:</label>
+            <input id="parentContentId" name="parentContentId">
+          </div>
+          <input type="submit" value="Check Report">
+        </form>
+
+        <form id="delete-report">
+          <h3>Delete Report</h3>
+          <div>
+            <label for="id">Id of content that was reported:</label>
+            <input id="id" name="id">
+          </div>
+          <input type="submit" value="Delete Report">
+        </form>
+
+        <!-- starter code -->
         <form id="create-user">
           <h3>Create User</h3>
           <div>
