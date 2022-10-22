@@ -18,13 +18,27 @@ export const doesFollowExist = async (req: Request, res: Response, next: NextFun
 };
 
 /**
- * Check if userId is given
+ * Checks if params are given
  */
- export const isParamsGiven = () => {
+ export const isParamsGiven = (reqInfoType: "query" | "body" | "params", field: "userId" | "userFollowed") => {
   return async (req: Request, res: Response, next: NextFunction) => {
-    const info = req.query.userId;
+    const info = (req[reqInfoType])[field];
     if (!info) {
-      return res.status(400).json({message: 'userId is not given.',});
+      return res.status(400).json({message: "required field not given"});
+    }
+    next();
+  };
+};
+
+/**
+ * Check if mongo ids are valid
+ */
+ export const isParamsIdValid = (reqInfoType: "query" | "body" | "params", field: "userId" | "userFollowed"
+) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const info = (req[reqInfoType])[field];
+    if (!Types.ObjectId.isValid(info)) {
+      return res.status(400).json({message: 'invalid MongoID'});
     }
     next();
   };

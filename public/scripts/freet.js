@@ -34,3 +34,9 @@ function deleteFreet(fields) {
     .then(showResponse)
     .catch(showResponse);
 }
+
+function viewFeed(fields) {
+  fetch('/api/freets/feed')
+    .then(showResponse)
+    .catch(showResponse);
+}

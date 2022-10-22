@@ -2,6 +2,7 @@ import type {Request, Response, NextFunction} from "express";
 import {Types} from "mongoose";
 import CommentCollection from "./collection";
 import FreetCollection from "../freet/collection";
+import SharedFreetCollection from "../shared_freet/collection";
 
 /**
  * Checks if the comment exists
@@ -32,19 +33,6 @@ export const canChangeComment = async (req: Request, res: Response, next: NextFu
 };
 
 /**
- * Check if parentContentId is given
- */
- export const isParamsGiven = () => {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    const info = req.query.parentContentId;
-    if (!info) {
-      return res.status(400).json({message: "parentContentId not given.",});
-    }
-    next();
-  };
-};
-
-/**
  * Checks if content is valid
  */
  export const isValidContent = (req: Request, res: Response, next: NextFunction) => {
@@ -68,8 +56,35 @@ export const canChangeComment = async (req: Request, res: Response, next: NextFu
 export const isValidParentContentType = () => {
   return async (req: Request, res: Response, next: NextFunction) => {
     const parentContentType = req.body.parentContentType as string;
-    if (parentContentType !== "freet" && parentContentType !== "comment") {
-      return res.status(400).json({ message: "Comments can only be attatched to freets and other comments." });
+    if (parentContentType !== "freet" && parentContentType !== "comment" && parentContentType !== "shared_freet") {
+      return res.status(400).json({ message: "Comments can only be attatched to freets, shared freets, and other comments." });
+    }
+    next();
+  };
+};
+
+/**
+ * Checks if params are given
+ */
+ export const isParamsGiven = (reqInfoType: "query" | "body" | "params", field: "parentContentId" | "commentId") => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const info = (req[reqInfoType])[field];
+    if (!info) {
+      return res.status(400).json({message: "required field not given",});
+    }
+    next();
+  };
+};
+
+/**
+ * Check if mongo ids are valid
+ */
+ export const isParamsIdValid = (reqInfoType: "query" | "body" | "params", field: "parentContentId" | "commentId"
+) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const info = (req[reqInfoType])[field];
+    if (!Types.ObjectId.isValid(info)) {
+      return res.status(400).json({message: 'invalid MongoID',});
     }
     next();
   };
@@ -78,14 +93,18 @@ export const isValidParentContentType = () => {
 /**
  * Checks if parent content exists
  */
-export const doesParentContentExist = () => {
+ export const doesParentContentExist = () => {
   return async (req: Request, res: Response, next: NextFunction) => {
     const id = req.body.parentContentId as string;
-    const freet = FreetCollection.findById(id);
-    const comment = CommentCollection.findById(id);
-    if (!freet && !comment) {
+    const freet = await FreetCollection.findById(id);
+    const comment = await CommentCollection.findById(id);
+    const sharedFreet = await SharedFreetCollection.findById(id);
+    if (!freet && !comment && !sharedFreet) {
       return res.status(404).json({ message: 'parent content does not exist' });
     }
     next();
   };
 };
+
+
+

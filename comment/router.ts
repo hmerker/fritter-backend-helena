@@ -18,7 +18,7 @@ const router = express.Router();
  */
 router.get(
   "/",
-  [commentValidator.isParamsGiven()],
+  [commentValidator.isParamsGiven("query", "parentContentId"), commentValidator.isParamsIdValid("query", "parentContentId")],
   async (req: Request, res: Response, next: NextFunction) => {
     const comments = await CommentCollection.findByParentContentId(req.query.parentContentId as string);
     const response = comments.map(util.constructCommentResponse);
@@ -36,6 +36,7 @@ router.post(
   "/",
   [
     userValidator.isUserLoggedIn, commentValidator.isValidContent, commentValidator.isValidParentContentType(), commentValidator.doesParentContentExist(),
+    commentValidator.isParamsGiven("body", "parentContentId"), commentValidator.isParamsIdValid("body", "parentContentId")
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? "";
@@ -56,6 +57,7 @@ router.delete(
   "/:commentId?",
   [
     userValidator.isUserLoggedIn, commentValidator.doesCommentExist, commentValidator.canChangeComment,
+    commentValidator.isParamsGiven("params", "commentId"), commentValidator.isParamsIdValid("params", "commentId")
   ],
   async (req: Request, res: Response) => {
     const {commentId} = req.params;

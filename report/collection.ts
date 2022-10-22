@@ -2,6 +2,7 @@ import type {HydratedDocument, Types} from "mongoose";
 import type {Report} from "./model";
 import ReportModel from "./model";
 import FreetCollection from "../freet/collection";
+import SharedFreetCollection from "../shared_freet/collection";
 import CommentCollection from "../comment/collection";
 
 export type DeleteManyHelper = {
@@ -20,7 +21,7 @@ class ReportCollection {
    * @param {string} content - content 
    * @return {Promise<HydratedDocument<Report>>} - new report
    */
-  static async addOne(userId: Types.ObjectId | string, parentContentId: Types.ObjectId | string, parentContentType: "freet" | "comment", content: string
+  static async addOne(userId: Types.ObjectId | string, parentContentId: Types.ObjectId | string, parentContentType: "freet" | "comment" | "shared_freet", content: string
   ): Promise<HydratedDocument<Report>> {
     const report = new ReportModel({userId, parentContentId, parentContentType, content});
     if (parentContentType === "freet"){
@@ -28,6 +29,9 @@ class ReportCollection {
     }
     else if (parentContentType === "comment"){
       CommentCollection.updateCounts(parentContentId, "reports", 1);
+    }
+    else if (parentContentType === "shared_freet"){
+      SharedFreetCollection.updateCounts(parentContentId, "reports", 1);
     }
     await report.save();
     return report.populate("userId");
@@ -61,6 +65,9 @@ class ReportCollection {
     }
     else if (deletedReport.parentContentType === "comment"){
       deletedReport !== null && CommentCollection.updateCounts(deletedReport.parentContentId, "reports", -1);
+    }
+    else if (deletedReport.parentContentType === "shared_freet"){
+      deletedReport !== null && SharedFreetCollection.updateCounts(deletedReport.parentContentId, "reports", -1);
     }
     return deletedReport !== null;
   }

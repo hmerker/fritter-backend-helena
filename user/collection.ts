@@ -33,7 +33,7 @@ class UserCollection {
    * @return {Promise<HydratedDocument<User>> | Promise<null>} - The user with the given username, if any
    */
   static async findOneByUserId(userId: Types.ObjectId | string): Promise<HydratedDocument<User>> {
-    return UserModel.findOne({ _id: userId });
+    return UserModel.findOne({_id: userId});
   }
 
   /**

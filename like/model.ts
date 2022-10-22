@@ -6,14 +6,14 @@ export type Like = {
   _id: Types.ObjectId;
   userId: Types.ObjectId;
   parentContentId: Types.ObjectId;
-  parentContentType: "freet" | "comment";
+  parentContentType: "freet" | "comment" | "shared_freet";
 };
 
 export type PopulatedLike = {
   _id: Types.ObjectId;
   userId: User;
   parentContentId: Types.ObjectId;
-  parentContentType: "freet" | "comment";
+  parentContentType: "freet" | "comment" | "shared_freet";
 };
 
 const LikeSchema = new Schema<Like>({

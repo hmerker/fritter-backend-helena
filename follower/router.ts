@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.get(
   "/:userId?",
-  [followerValidator.isParamsGiven()],
+  [followerValidator.isParamsGiven("query", "userId"), followerValidator.isParamsIdValid("query", "userId")],
   async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.query.userId;
     return res.status(200).json(await FollowerCollection.getFollowCounts(userId as string));
@@ -27,7 +27,7 @@ router.post(
 
 router.delete(
   "/:userFollowed",
-  [userValidator.isUserLoggedIn],
+  [userValidator.isUserLoggedIn, followerValidator.isParamsGiven("params", "userFollowed"), followerValidator.isParamsIdValid("params", "userFollowed")],
   async (req: Request, res: Response, next: NextFunction) => {
     await FollowerCollection.deleteOne(req.params.userFollowed);
     return res.status(200).json({message: "Your follower was deleted.",});

@@ -6,7 +6,7 @@ export type Comment = {
   _id: Types.ObjectId;
   authorId: Types.ObjectId;
   parentContentId: Types.ObjectId;
-  parentContentType: "freet" | "comment";
+  parentContentType: "freet" | "comment" | "shared_freet";
   dateCreated: Date;
   content: string;
   likes: number;
@@ -17,7 +17,7 @@ export type PopulatedComment = {
   _id: Types.ObjectId;
   authorId: User;
   parentContentId: Types.ObjectId;
-  parentContentType: "freet" | "comment";
+  parentContentType: "freet" | "comment" |  "shared_freet";
   dateCreated: Date;
   content: string;
   likes: number;

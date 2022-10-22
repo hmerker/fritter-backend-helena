@@ -16,6 +16,7 @@ import {followerRouter} from "../follower/router";
 import {likeRouter} from "../like/router";
 import {reportRouter} from "../report/router";
 import {communityScoreRouter} from "../community_score/router";
+import {sharedFreetRouter} from "../shared_freet/router";
 
 // Load environmental variables
 dotenv.config({});
@@ -88,6 +89,7 @@ app.use("/api/reports", reportRouter);
 app.use("/api/followers", followerRouter);
 app.use("/api/likes", likeRouter);
 app.use("/api/communityScores", communityScoreRouter);
+app.use("/api/sharedFreets", sharedFreetRouter);
 
 // Catch all the other routes and display error message
 app.all("*", (req: Request, res: Response) => {

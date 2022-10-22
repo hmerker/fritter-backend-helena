@@ -15,7 +15,7 @@ const router = express.Router();
 router.get(
   "/:parentContentId?",
   [
-    userValidator.isUserLoggedIn, reportValidator.isParamGiven("query"), reportValidator.doesParentContentExist("query"),
+    userValidator.isUserLoggedIn, reportValidator.isParamsGiven("query"), reportValidator.isParamsIdValid("query"),
   ],
   async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.session.userId as string;
@@ -32,8 +32,10 @@ router.get(
 router.post(
   "/",
   [
-    userValidator.isUserLoggedIn, reportValidator.doesDuplicateReportExist(), reportValidator.isValidContent,
+    userValidator.isUserLoggedIn, reportValidator.isParamsGiven("body"), reportValidator.isParamsIdValid("body"),
+    reportValidator.doesDuplicateReportExist(), reportValidator.isValidContent,
     reportValidator.isParentContentTypeValid(), reportValidator.doesParentContentExist("body"),
+
   ],
   async (req: Request, res: Response) => {
     const userId = req.session.userId as string;
@@ -51,7 +53,8 @@ router.post(
 router.delete(
   "/:parentContentId?",
   [
-    userValidator.isUserLoggedIn, reportValidator.isParamGiven("params"),
+    userValidator.isUserLoggedIn, reportValidator.isParamsGiven("params"),
+    reportValidator.isParamsIdValid("body"),
   ],
   async (req: Request, res: Response) => {
     const userId = req.session.userId as string;

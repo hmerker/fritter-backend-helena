@@ -6,7 +6,7 @@ export type Report = {
   _id: Types.ObjectId;
   userId: Types.ObjectId;
   parentContentId: Types.ObjectId;
-  parentContentType: "freet" | "comment";
+  parentContentType: "freet" | "comment" | "shared_freet";
   content: string;
 };
 
@@ -14,7 +14,7 @@ export type PopulatedReport = {
   _id: Types.ObjectId;
   userId: User;
   parentContentId: Types.ObjectId;
-  parentContentType: "freet" | "comment";
+  parentContentType: "freet" | "comment" | "shared_freet";
   content: string;
 };
 

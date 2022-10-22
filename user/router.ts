@@ -1,6 +1,7 @@
 import type {Request, Response} from "express";
 import express from "express";
 import FreetCollection from "../freet/collection";
+import SharedFreetCollection from "../shared_freet/collection";
 import UserCollection from "./collection";
 import * as userValidator from "../user/middleware";
 import * as util from "./util";
@@ -151,6 +152,7 @@ router.delete(
     const userId = (req.session.userId as string) ?? ""; // Will not be an empty string since its validated in isUserLoggedIn
     await UserCollection.deleteOne(userId);
     await FreetCollection.deleteMany(userId);
+    await SharedFreetCollection.deleteMany(userId);
     await CommentCollection.deleteMany({userId});
     await CommunityScoreCollection.deleteOne(userId);
     await FollowerCollection.deleteMany(userId);

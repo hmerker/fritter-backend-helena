@@ -52,6 +52,26 @@ router.get(
 );
 
 /**
+  * Get freets of users followed to populate user's feed
+  *
+  * @name GET /api/freets/feed
+  *
+  * @return {FreetResponse[]} - An array of freets created by user with id, authorId
+  * @throws {403} - If user is not logged in
+  *
+  */
+router.get(
+  "/feed",
+  [userValidator.isUserLoggedIn],
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userId = (req.session.userId as string) ?? "";
+    const freetList = await FreetCollection.getFreetsForFeed(userId, "$in");
+    const response = freetList.map(util.constructFreetResponse);
+    return res.status(200).json(response);
+  }
+);
+
+/**
  * Create a new freet.
  *
  * @name POST /api/freets

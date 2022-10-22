@@ -1,21 +1,9 @@
 import type {Request, Response, NextFunction} from "express";
 import FreetCollection from "../freet/collection";
 import CommentCollection from "../comment/collection";
+import SharedFreetCollection from "../shared_freet/collection";
 import LikeCollection from "./collection";
-
-/**
- * Check if parentContentId is given
- */
-export const isParamGiven = (reqInfoType: "params" | "query") => {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    const info = req[reqInfoType].parentContentId;
-    if (!info) {
-    return res.status(400).json({message: 'Required information not given.',});
-    }
-    
-    next();
-  };
-};
+import {Types} from "mongoose";
 
 /**
  * Checks if parent content exists
@@ -23,9 +11,10 @@ export const isParamGiven = (reqInfoType: "params" | "query") => {
 export const doesParentContentExist = (reqInfoType: "body" | "query") => {
   return async (req: Request, res: Response, next: NextFunction) => {
     const parentIdToCheck = req[reqInfoType].parentContentId as string;
-    const freetCheck = FreetCollection.findById(parentIdToCheck);
-    const commentCheck = CommentCollection.findById(parentIdToCheck);
-    if (!freetCheck && !commentCheck) {
+    const freetCheck = await FreetCollection.findById(parentIdToCheck);
+    const commentCheck = await CommentCollection.findById(parentIdToCheck);
+    const sharedFreetCheck = await SharedFreetCollection.findById(parentIdToCheck);
+    if (!freetCheck && !commentCheck && !sharedFreetCheck) {
       return res.status(404).json({message: 'Parent content does not exist.'});
     }
 
@@ -54,10 +43,37 @@ export const doesDuplicateLikeExist = () => {
 export const isParentContentTypeValid = () => {
   return async (req: Request, res: Response, next: NextFunction) => {
     const parentContentTypeToCheck = req.body.parentContentType as string;
-    if (parentContentTypeToCheck !== "freet" && parentContentTypeToCheck !== "comment") {
-      return res.status(400).json({message: "Parent is not a freet or a comment."});
+    if (parentContentTypeToCheck !== "freet" && parentContentTypeToCheck !== "comment" && parentContentTypeToCheck !== "shared_freet") {
+      return res.status(400).json({message: "Parent is not a freet, a comment, or a shared freet."});
     }
 
+    next();
+  };
+};
+
+/**
+ * Checks if params are given
+ */
+ export const isParamsGiven = (reqInfoType: "query" | "body" | "params") => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const info = (req[reqInfoType]).parentContentId;
+    if (!info) {
+      return res.status(400).json({message: "required field not given",});
+    }
+    next();
+  };
+};
+
+/**
+ * Check if mongo ids are valid
+ */
+ export const isParamsIdValid = (reqInfoType: "query" | "body" | "params"
+) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const info = (req[reqInfoType]).parentContentId;
+    if (!Types.ObjectId.isValid(info)) {
+      return res.status(400).json({message: 'invalid MongoID',});
+    }
     next();
   };
 };

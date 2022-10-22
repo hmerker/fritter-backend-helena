@@ -36,6 +36,17 @@ class FollowerCollection {
   }
 
   /**
+   * get all users that user follows
+   *
+   * @param userId - user id
+   * @returns users followed list
+   */
+   static async getUsersFollowedList(userId: Types.ObjectId | string
+  ): Promise<Array<HydratedDocument<Follower>>> {
+    return FollowerModel.find({follower: userId});
+  }
+
+  /**
    * Check if follow already exists
    *
    * @param {string} follower - follower id

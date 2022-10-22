@@ -14,7 +14,7 @@ const router = express.Router();
 router.get(
   "/:parentContentId?",
   [
-    userValidator.isUserLoggedIn, likeValidator.isParamGiven("query"), likeValidator.doesParentContentExist("query")
+    userValidator.isUserLoggedIn, likeValidator.isParamsGiven("query"), likeValidator.isParamsIdValid("query")
   ],
   async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.session.userId as string;
@@ -31,7 +31,8 @@ router.get(
 router.post(
   "/",
   [
-    userValidator.isUserLoggedIn, likeValidator.doesDuplicateLikeExist(), 
+    userValidator.isUserLoggedIn, likeValidator.isParamsGiven("body"),
+    likeValidator.isParamsIdValid("body"), likeValidator.doesDuplicateLikeExist(), 
     likeValidator.isParentContentTypeValid(), likeValidator.doesParentContentExist("body"),
   ],
   async (req: Request, res: Response) => {
@@ -50,7 +51,7 @@ router.post(
 router.delete(
   "/:parentContentId?",
   [
-    userValidator.isUserLoggedIn, likeValidator.isParamGiven("params"),
+    userValidator.isUserLoggedIn, likeValidator.isParamsGiven("params"), likeValidator.isParamsIdValid("params"),
   ],
   async (req: Request, res: Response) => {
     const userId = req.session.userId as string;

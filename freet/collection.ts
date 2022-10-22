@@ -3,6 +3,7 @@ import type {Freet} from "./model";
 import FreetModel from "./model";
 import UserCollection from "../user/collection";
 import CommunityScoreCollection from "../community_score/collection";
+import FollowerCollection from "../follower/collection";
 
 class FreetCollection {
   /**
@@ -13,7 +14,22 @@ class FreetCollection {
    */
   static async findById(
     freetId: Types.ObjectId | string): Promise<HydratedDocument<Freet>> {
-    return (await FreetModel.findById(freetId)).populated("authorId");
+    return (await FreetModel.findById(freetId)).populate("authorId");
+  }
+
+  /**
+    * Get freets for user's feed
+    *
+    * @param userId - user id
+    * @param mongoFollowerFilter - include or exlcude users followed
+    * @returns list of freets
+    */
+   static async getFreetsForFeed(userId: Types.ObjectId | string, mongoFollowerFilter: "$in" | "$nin"
+  ): Promise<Array<HydratedDocument<Freet>>> {
+    const followerEntries = await FollowerCollection.getUsersFollowedList(userId);
+    const usersFollowed = followerEntries.map((followerEntry) => followerEntry.userFollowed);
+    mongoFollowerFilter === "$nin" && usersFollowed.push(userId as Types.ObjectId);
+    return await FreetModel.find({authorId: {[mongoFollowerFilter]: usersFollowed}}).populate("authorId");
   }
   
   /**

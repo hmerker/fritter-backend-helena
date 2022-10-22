@@ -35,6 +35,7 @@ const formsAndHandlers = {
   "sign-in": signIn,
   "sign-out": signOut,
   "view-all-freets": viewAllFreets,
+  "view-feed": viewFeed,
   "view-freets-by-author": viewFreetsByAuthor,
   "create-freet": createFreet,
   "edit-freet": editFreet,
@@ -52,6 +53,11 @@ const formsAndHandlers = {
   "view-reports-by-content": viewAllReportsByContentId,
   "create-report": createReport,
   "delete-report": deleteReport,
+  "view-all-shared-freets": viewAllSharedFreets,
+  "view-shared-freets-by-author": viewSharedFreetsByAuthor,
+  "create-shared-freet": createSharedFreet,
+  "edit-shared-freet": editSharedFreet,
+  "delete-shared-freet": deleteSharedFreet,
 };
 
 // Attach handlers to forms

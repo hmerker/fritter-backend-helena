@@ -3,6 +3,7 @@ import type {Like} from "./model";
 import LikeModel from "./model";
 import CommentCollection from "../comment/collection";
 import FreetCollection from "../freet/collection";
+import SharedFreetCollection from "../shared_freet/collection";
 
 export type DeleteManyHelper = {
   authorId?: Types.ObjectId | string;
@@ -19,7 +20,7 @@ class LikeCollection {
    * @param {string} parentContentType - freet or comment
    * @return {Promise<HydratedDocument<Like>>} - new like
    */
-  static async addOne(userId: Types.ObjectId | string, parentContentId: Types.ObjectId | string, parentContentType: "freet" | "comment"
+  static async addOne(userId: Types.ObjectId | string, parentContentId: Types.ObjectId | string, parentContentType: "freet" | "comment" | "shared_freet"
   ): Promise<HydratedDocument<Like>> {
     const like = new LikeModel({userId, parentContentId, parentContentType,});
     if (parentContentType === "freet"){
@@ -27,6 +28,9 @@ class LikeCollection {
     }
     else if (parentContentType === "comment"){
       CommentCollection.updateCounts(parentContentId, "likes", 1);
+    }
+    else if (parentContentType === "shared_freet"){
+      SharedFreetCollection.updateCounts(parentContentId, "likes", 1);
     }
     await like.save();
     return like.populate("userId");
@@ -60,6 +64,9 @@ class LikeCollection {
     }
     else if (deletedLike.parentContentType === "comment"){
       deletedLike !== null && CommentCollection.updateCounts(deletedLike.parentContentId, "likes", -1);
+    }
+    else if (deletedLike.parentContentType === "shared_freet"){
+      deletedLike !== null && SharedFreetCollection.updateCounts(deletedLike.parentContentId, "likes", -1);
     }
     return deletedLike !== null;
   }
