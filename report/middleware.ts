@@ -61,3 +61,21 @@ export const isParentContentTypeValid = () => {
     next();
   };
 };
+
+/**
+ * Checks if content is valid
+ */
+export const isValidContent = (req: Request, res: Response, next: NextFunction) => {
+  const {content} = req.body as {content: string};
+  if (!content.trim()) {
+    res.status(400).json({error: "Content cannot be empty.",});
+    return;
+  }
+
+  if (content.length > 140) {
+    res.status(413).json({error: "Content cannot be greater than 140 characters.",});
+    return;
+  }
+
+  next();
+};

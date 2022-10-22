@@ -32,13 +32,13 @@ router.get(
 router.post(
   "/",
   [
-    userValidator.isUserLoggedIn, reportValidator.doesDuplicateReportExist(),
+    userValidator.isUserLoggedIn, reportValidator.doesDuplicateReportExist(), reportValidator.isValidContent,
     reportValidator.isParentContentTypeValid(), reportValidator.doesParentContentExist("body"),
   ],
   async (req: Request, res: Response) => {
     const userId = req.session.userId as string;
-    const {parentContentId, parentContentType} = req.body;
-    const newReport = await ReportCollection.addOne(userId, parentContentId, parentContentType);
+    const {parentContentId, parentContentType, content} = req.body;
+    const newReport = await ReportCollection.addOne(userId, parentContentId, parentContentType, content);
     res.status(201).json({message: "You reported the content successfully.", newReport});
   }
 );

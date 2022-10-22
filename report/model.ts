@@ -7,6 +7,7 @@ export type Report = {
   userId: Types.ObjectId;
   parentContentId: Types.ObjectId;
   parentContentType: "freet" | "comment";
+  content: string;
 };
 
 export type PopulatedReport = {
@@ -14,6 +15,7 @@ export type PopulatedReport = {
   userId: User;
   parentContentId: Types.ObjectId;
   parentContentType: "freet" | "comment";
+  content: string;
 };
 
 const ReportSchema = new Schema<Report>({
@@ -28,6 +30,10 @@ const ReportSchema = new Schema<Report>({
     required: true,
   },
   parentContentType: {
+    type: String,
+    required: true,
+  },
+  content: {
     type: String,
     required: true,
   },
