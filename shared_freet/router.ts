@@ -74,7 +74,7 @@ router.post(
     for (let user of collaboratingAuthors){
       let currUserId = await UserCollection.findOneByUsername(user);
       if (currUserId !== null){
-        collaboratingAuthorsStr.push(currUserId.toString());
+        collaboratingAuthorsStr.push((currUserId._id).toString());
       }
     }
     const freet = await SharedFreetCollection.addOne(userId, req.body.content, collaboratingAuthorsStr);
@@ -124,7 +124,7 @@ router.delete(
  * @return {SharedFreetResponse} - the updated freet
  * @throws {403} - if the user is not logged in or not the author of
  *                 of the freet
- * @throws {404} - If the freetId is not valid
+ * @throws {404} - If the sharedFreetId is not valid
  * @throws {400} - If the freet content is empty or a stream of empty spaces
  * @throws {413} - If the freet content is more than 140 characters long
  */
@@ -137,10 +137,10 @@ router.put(
     sharedFreetValidator.isValidFreetContent,
   ],
   async (req: Request, res: Response) => {
-    const freet = await SharedFreetCollection.updateOne(req.params.freetId, req.body.content);
+    const sharedFreet = await SharedFreetCollection.updateOne(req.params.sharedFreetId, req.body.content);
     res.status(200).json({
       message: "Your freet was updated successfully.",
-      freet: util.constructSharedFreetResponse(freet),
+      freet: util.constructSharedFreetResponse(sharedFreet),
     });
   }
 );

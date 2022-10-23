@@ -71,10 +71,10 @@ const isValidFreetModifier = async (req: Request, res: Response, next: NextFunct
 };
 
 /**
- * Checks if the current user is the author of the freet whose freetId is in req.params
+ * Checks if the current user is the author of the freet whose sharedFreetId is in req.params
  */
  const isValidFreetCreator = async (req: Request, res: Response, next: NextFunction) => {
-  const freet = await SharedFreetCollection.findOne(req.params.freetId);
+  const freet = await SharedFreetCollection.findOne(req.params.sharedFreetId);
   const userId = freet.authorId._id;
   if (req.session.userId !== userId.toString()) {
     res.status(403).json({
@@ -100,7 +100,7 @@ const isValidFreetModifier = async (req: Request, res: Response, next: NextFunct
   }
   if (flag === true) {
     res.status(403).json({
-      error: "One or more of the usernames in colaboratingAuthors are invalid.",
+      error: "One or more of the usernames in colaboratingAuthors do not exist.",
     });
     return;
   }
