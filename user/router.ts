@@ -7,6 +7,7 @@ import * as userValidator from "../user/middleware";
 import * as util from "./util";
 import CommentCollection from "../comment/collection";
 import CommunityScoreCollection from "../community_score/collection";
+import CredibilityCountCollection from "../credibility_count/collection";
 import FollowerCollection from "../follower/collection";
 import LikeCollection from "../like/collection";
 import ReportCollection from "../report/collection";
@@ -97,6 +98,7 @@ router.post(
       req.body.password
     );
     await CommunityScoreCollection.addOne(user._id);
+    await CredibilityCountCollection.addOne(user._id);
     req.session.userId = user._id.toString();
     res.status(201).json({
       message: `Your account was created successfully. You have been logged in as ${user.username}`,
@@ -155,6 +157,7 @@ router.delete(
     await SharedFreetCollection.deleteMany(userId);
     await CommentCollection.deleteMany({userId});
     await CommunityScoreCollection.deleteOne(userId);
+    await CredibilityCountCollection.deleteOne(userId);
     await FollowerCollection.deleteMany(userId);
     await LikeCollection.deleteMany({userId});
     await ReportCollection.deleteMany({userId});

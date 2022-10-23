@@ -17,14 +17,28 @@ export const constructCredibilityResponse = (score: HydratedDocument<Credibility
 };
 
 /**
- * Calculate credibility level for user's score
+ * Calculate credibility level for user's score on 1-5 scale
  *
  * @param score
  * @returns level
  */
 export const getCredibilityLevel = (score: number): number => {
   
-  //TODO
-  return 5;
+  if (score < 20){
+    return 1;
+  }
+  else if (score < 40){
+    return 2;
+  }
+  else if (score < 70){
+    return 3;
+  }
+  else if (score < 100){
+    return 4;
+  }
+  else{
+    return 5;
+  }
+
 };
 

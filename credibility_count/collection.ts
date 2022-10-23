@@ -12,7 +12,7 @@ class CredibilityCountCollection {
    */
   static async addOne(userId: Types.ObjectId | string
   ): Promise<HydratedDocument<CredibilityCount>> {
-    const CredibilityCount = new CredibilityCountModel({userId, score: 0});
+    const CredibilityCount = new CredibilityCountModel({userId, score: 0, level: 1});
     await CredibilityCount.save();
     return CredibilityCount.populate("userId");
   }
@@ -52,10 +52,10 @@ class CredibilityCountCollection {
     const credibilityCount = await CredibilityCountModel.findOne({userId});
 
     if (isNew){
-      credibilityCount.score += 1;
+      credibilityCount.score = credibilityCount.score + 1;
     }
     else{
-      credibilityCount.score -= 1;
+      credibilityCount.score = Math.max(credibilityCount.score - 1, 0);
     }
 
     const newLevel = getCredibilityLevel(credibilityCount.score);
