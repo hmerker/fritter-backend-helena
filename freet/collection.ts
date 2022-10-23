@@ -3,6 +3,7 @@ import type {Freet} from "./model";
 import FreetModel from "./model";
 import UserCollection from "../user/collection";
 import CommunityScoreCollection from "../community_score/collection";
+import CredibilityCountCollection from "../credibility_count/collection";
 import FollowerCollection from "../follower/collection";
 
 class FreetCollection {
@@ -39,13 +40,16 @@ class FreetCollection {
    * @param {string} content - The id of the content of the freet
    * @return {Promise<HydratedDocument<Freet>>} - The newly created freet
    */
-  static async addOne(authorId: Types.ObjectId | string, content: string): Promise<HydratedDocument<Freet>> {
+  static async addOne(authorId: Types.ObjectId | string, content: string, source: string): Promise<HydratedDocument<Freet>> {
     const date = new Date();
     const freet = new FreetModel({
       authorId, dateCreated: date, content, dateModified: date,
-      comments: 0, likes: 0, reports: 0
+      comments: 0, likes: 0, reports: 0, source
     });
     await freet.save(); // Saves freet to MongoDB
+    if (source !== "none"){
+      await CredibilityCountCollection.updateOne(authorId, true);
+    }
     await CommunityScoreCollection.updateOne(authorId, true, content);
     return freet.populate("authorId");
   }
@@ -88,9 +92,12 @@ class FreetCollection {
    * @param {string} content - The new content of the freet
    * @return {Promise<HydratedDocument<Freet>>} - The newly updated freet
    */
-  static async updateOne(freetId: Types.ObjectId | string, content: string): Promise<HydratedDocument<Freet>> {
+  static async updateOne(freetId: Types.ObjectId | string, content: string, source: string): Promise<HydratedDocument<Freet>> {
     const freet = await FreetModel.findOne({_id: freetId});
     freet.content = content;
+    if (source !== "none"){
+      freet.source = source;
+    }
     freet.dateModified = new Date();
     await freet.save();
     return freet.populate("authorId");
@@ -103,6 +110,10 @@ class FreetCollection {
    * @return {Promise<Boolean>} - true if the freet has been deleted, false otherwise
    */
   static async deleteOne(freetId: Types.ObjectId | string): Promise<boolean> {
+    const freetToDelete = await FreetModel.findOne({_id: freetId});
+    if (freetToDelete.source !== "none"){
+      await CredibilityCountCollection.updateOne(freetToDelete.authorId, false)
+    }
     const freet = await FreetModel.findOneAndDelete({_id: freetId});
     freet && (await CommunityScoreCollection.updateOne(freet.authorId, false, freet.content));
     return freet !== null;

@@ -9,6 +9,7 @@
   <script src="/scripts/user.js"></script>
   <script src="/scripts/comment.js"></script>
   <script src="/scripts/community_score.js"></script>
+  <script src="/scripts/credibility_count.js"></script>
   <script src="/scripts/follower.js"></script>
   <script src="/scripts/like.js"></script>
   <script src="/scripts/report.js"></script>
@@ -66,6 +67,12 @@
         <form id="get-community-score">
           <h3>Check the community score of the current user</h3>
           <input type="submit" value="Check Community Score">
+        </form>
+
+        <!-- credibility counts -->
+        <form id="get-credibility-count">
+          <h3>Check the credibility count of the current user</h3>
+          <input type="submit" value="Check Credibility Count">
         </form>
 
         <!-- followers -->
@@ -164,7 +171,7 @@
           <input type="submit" value="Delete Report">
         </form>
 
-        <!-- starter code -->
+        <!-- users -->
         <form id="create-user">
           <h3>Create User</h3>
           <div>
@@ -219,6 +226,8 @@
           <input type="submit" value="Sign out">
         </form>
 
+        <!-- freets -->
+
         <form id="view-all-freets">
             <h3>View All Freets</h3>
             <input type="submit" value="View All Freets">
@@ -244,6 +253,10 @@
             <label for="content">Content:</label>
             <textarea id="content" name="content"></textarea>
           </div>
+          <div>
+            <label for="source">Optional Source:</label>
+            <textarea id="source" name="source"></textarea>
+          </div>
           <input type="submit" value="Create Freet">
         </form>
 
@@ -257,6 +270,10 @@
             <label for="content">Content:</label>
             <textarea id="content" name="content"></textarea>
           </div>
+          <div>
+            <label for="source">Optional Source:</label>
+            <textarea id="source" name="source"></textarea>
+          </div>
           <input type="submit" value="Edit Freet">
         </form>
 
@@ -268,6 +285,8 @@
           </div>
           <input type="submit" value="Delete Freet">
         </form>
+
+        <!-- shared freets -->
 
         <form id="view-all-shared-freets">
           <h3>View All Shared Freets</h3>

@@ -2,8 +2,8 @@ import {HydratedDocument, Types} from "mongoose";
 import {CommunityScore} from "./model";
 
 type ScoreResponse = {
-  score: number;
   userId: Types.ObjectId | string;
+  score: number;
 };
 
 /**
@@ -12,7 +12,7 @@ type ScoreResponse = {
 export const constructScoreResponse = (score: HydratedDocument<CommunityScore>
 ): ScoreResponse => {
   const {_id: userId} = score.userId;
-  return {userId, score: score.score,};
+  return {userId, score: score.score};
 };
 
 /**

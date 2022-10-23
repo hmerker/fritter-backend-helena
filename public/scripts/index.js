@@ -44,6 +44,7 @@ const formsAndHandlers = {
   "create-comment": createComment,
   "delete-comment": deleteComment,
   "get-community-score": getCommunityScore,
+  "get-credibility-count": getCredibilityCount,
   "view-follower-counts": viewTotalFollowerCounts,
   "create-follower": createFollower,
   "delete-follower": deleteFollower,

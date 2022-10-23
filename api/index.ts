@@ -17,6 +17,7 @@ import {likeRouter} from "../like/router";
 import {reportRouter} from "../report/router";
 import {communityScoreRouter} from "../community_score/router";
 import {sharedFreetRouter} from "../shared_freet/router";
+import {credibilityCountRouter} from "../credibility_count/router";
 
 // Load environmental variables
 dotenv.config({});
@@ -90,6 +91,7 @@ app.use("/api/followers", followerRouter);
 app.use("/api/likes", likeRouter);
 app.use("/api/communityScores", communityScoreRouter);
 app.use("/api/sharedFreets", sharedFreetRouter);
+app.use("/api/credibilityCounts", credibilityCountRouter);
 
 // Catch all the other routes and display error message
 app.all("*", (req: Request, res: Response) => {

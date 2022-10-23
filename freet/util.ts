@@ -12,6 +12,7 @@ type FreetResponse = {
   comments: number;
   likes: number;
   reports: number;
+  source: string;
 };
 
 /**
