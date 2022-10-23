@@ -54,7 +54,7 @@ router.get(
 );
 
 /**
- * Create a new freet.
+ * Create a new shared freet
  *
  * @name POST /api/sharedFreets
  *
@@ -66,7 +66,7 @@ router.get(
  */
 router.post(
   "/",
-  [userValidator.isUserLoggedIn, sharedFreetValidator.isValidFreetContent],
+  [userValidator.isUserLoggedIn, sharedFreetValidator.isValidFreetContent, sharedFreetValidator.isValidCollaboratingAuthors],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ""; // Will not be an empty string since its validated in isUserLoggedIn
     const collaboratingAuthors = JSON.parse(req.body.collaboratingAuthors);
@@ -101,7 +101,7 @@ router.delete(
   [
     userValidator.isUserLoggedIn,
     sharedFreetValidator.isFreetExists,
-    sharedFreetValidator.isValidFreetModifier,
+    sharedFreetValidator.isValidFreetCreator,
   ],
   async (req: Request, res: Response) => {
     await SharedFreetCollection.deleteOne(req.params.sharedFreetId);

@@ -1,6 +1,7 @@
 import type {Request, Response, NextFunction} from "express";
 import {Types} from "mongoose";
 import SharedFreetCollection from "./collection";
+import UserCollection from "../user/collection";
 
 /**
  * Checks if a shared freet with sharedFreetId is req.params exists
@@ -69,4 +70,43 @@ const isValidFreetModifier = async (req: Request, res: Response, next: NextFunct
   next();
 };
 
-export {isFreetExists, isValidFreetContent, isValidFreetModifier};
+/**
+ * Checks if the current user is the author of the freet whose freetId is in req.params
+ */
+ const isValidFreetCreator = async (req: Request, res: Response, next: NextFunction) => {
+  const freet = await SharedFreetCollection.findOne(req.params.freetId);
+  const userId = freet.authorId._id;
+  if (req.session.userId !== userId.toString()) {
+    res.status(403).json({
+      error: "Cannot modify delete a shared freet unless you are the freet's creator.",
+    });
+    return;
+  }
+
+  next();
+};
+
+/**
+ * Checks if the collaborating authors are valid usernames
+ */
+ const isValidCollaboratingAuthors = async (req: Request, res: Response, next: NextFunction) => {
+  const collaboratingAuthors = JSON.parse(req.body.collaboratingAuthors);
+  let flag = false;
+  for (let user of collaboratingAuthors){
+    let currUserId = await UserCollection.findOneByUsername(user);
+    if (currUserId === null){
+      flag = true;
+    }
+  }
+  if (flag === true) {
+    res.status(403).json({
+      error: "One or more of the usernames in colaboratingAuthors are invalid.",
+    });
+    return;
+  }
+
+  next();
+};
+
+
+export {isFreetExists, isValidFreetContent, isValidFreetModifier, isValidFreetCreator, isValidCollaboratingAuthors};
