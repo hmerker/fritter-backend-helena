@@ -18,6 +18,7 @@ export type Freet = {
   likes: number;
   reports: number;
   source: string;
+  numCharsChanged: number;
 };
 
 export type PopulatedFreet = {
@@ -30,6 +31,7 @@ export type PopulatedFreet = {
   likes: number;
   reports: number;
   source: string;
+  numCharsChanged: number;
 };
 
 // Mongoose schema definition for interfacing with a MongoDB table
@@ -72,6 +74,10 @@ const FreetSchema = new Schema<Freet>({
   },
   source: {
     type: String,
+    required: true,
+  },
+  numCharsChanged: {
+    type: Number,
     required: true,
   },
 });

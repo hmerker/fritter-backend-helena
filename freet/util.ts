@@ -13,6 +13,7 @@ type FreetResponse = {
   likes: number;
   reports: number;
   source: string;
+  numCharsChanged: number;
 };
 
 /**

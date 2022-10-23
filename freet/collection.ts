@@ -44,7 +44,7 @@ class FreetCollection {
     const date = new Date();
     const freet = new FreetModel({
       authorId, dateCreated: date, content, dateModified: date,
-      comments: 0, likes: 0, reports: 0, source
+      comments: 0, likes: 0, reports: 0, source, numCharsChanged: 0
     });
     await freet.save(); // Saves freet to MongoDB
     if (source !== "none"){
@@ -87,6 +87,9 @@ class FreetCollection {
 
   /**
    * Update a freet with the new content
+   * 
+   * The levenshtein part of this method was heavily inspired by:
+   * https://www.npmjs.com/package/edit-distance
    *
    * @param {string} freetId - The id of the freet to be updated
    * @param {string} content - The new content of the freet
@@ -94,6 +97,18 @@ class FreetCollection {
    */
   static async updateOne(freetId: Types.ObjectId | string, content: string, source: string): Promise<HydratedDocument<Freet>> {
     const freet = await FreetModel.findOne({_id: freetId});
+
+    const newContent = content;
+    const oldContent = freet.content;
+
+    var ed = require('edit-distance');
+    var insert, remove, update;
+    insert = remove = function(string1: string) {return 1;};
+    update = function(string1: string, string2: string) {return string1 !== string2 ? 1 : 0;};
+  
+    var lev = ed.levenshtein(oldContent, newContent, insert, remove, update);
+    freet.numCharsChanged = freet.numCharsChanged + lev.distance;
+
     freet.content = content;
     if (source !== "none"){
       freet.source = source;

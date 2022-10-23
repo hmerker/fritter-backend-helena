@@ -62,4 +62,42 @@ const isValidFreetModifier = async (req: Request, res: Response, next: NextFunct
   next();
 };
 
-export {isFreetExists, isValidFreetContent, isValidFreetModifier};
+
+/**
+ * Checks if the freet is editable
+ * 
+ * The levenshtein part of this method was heavily inspired by:
+ * https://www.npmjs.com/package/edit-distance
+ */
+ const isValidFreetEdit = async (req: Request, res: Response, next: NextFunction) => {
+  const freet = await FreetCollection.findOne(req.params.freetId);
+  
+  const createdDate = freet.dateCreated;
+  const currDate = new Date();
+  
+  const numOfHours = 4;
+  const createdDateCopy = new Date(createdDate.getTime());
+  createdDateCopy.setTime(createdDateCopy.getTime() + numOfHours * 60 * 60 * 1000);
+
+  const newContent = req.body.content;
+  const oldContent = freet.content;
+  const numCharsChanged = freet.numCharsChanged;
+
+  var ed = require('edit-distance');
+  var insert, remove, update;
+  insert = remove = function(string1: string) {return 1;};
+  update = function(string1: string, string2: string) {return string1 !== string2 ? 1 : 0;};
+  
+  var lev = ed.levenshtein(oldContent, newContent, insert, remove, update);
+
+  if ((currDate > createdDateCopy) || (lev.distance + numCharsChanged > 10)) {
+    res.status(413).json({
+      error: "Cannot modify freets more than 10 characters or more than 4 hours after they are published.",
+    });
+    return;
+  }
+
+  next();
+}; 
+
+export {isFreetExists, isValidFreetContent, isValidFreetModifier, isValidFreetEdit};

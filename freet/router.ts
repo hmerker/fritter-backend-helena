@@ -150,6 +150,7 @@ router.put(
     freetValidator.isFreetExists,
     freetValidator.isValidFreetModifier,
     freetValidator.isValidFreetContent,
+    freetValidator.isValidFreetEdit,
   ],
   async (req: Request, res: Response) => {
     const sourceRaw = req.body.source;
