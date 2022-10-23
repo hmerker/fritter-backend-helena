@@ -14,7 +14,7 @@ class FreetCollection {
    */
   static async findById(
     freetId: Types.ObjectId | string): Promise<HydratedDocument<Freet>> {
-    return (await FreetModel.findById(freetId)).populate("authorId");
+    return await FreetModel.findById(freetId);
   }
 
   /**
