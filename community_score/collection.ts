@@ -53,10 +53,10 @@ class CommunityScoreCollection {
     const communityScore = await CommunityScoreModel.findOne({userId});
 
     if (isNewContent){
-      communityScore.score = communityScore.score + contentScore
+      communityScore.score = communityScore.score + contentScore;
     }
     else{
-      communityScore.score = communityScore.score - contentScore
+      communityScore.score = communityScore.score - contentScore;
     }
     
     await communityScore.save();
