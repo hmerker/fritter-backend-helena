@@ -415,6 +415,49 @@ This renders the `index.html` file that will be used to interact with the backen
 
 - `403` if the user is not logged in
 
+#### `GET /api/comments?parentContentId=PARENTCONTENTID` - Get all of the comments of a piece of content
+
+**Returns**
+
+- An array of all of the comments of the piece of content
+
+**Throws**
+
+- `400` if the `parentContentId` is not given or is not a valid Mongo ID
+
+#### `POST /api/comments` - Create a new comment entry
+
+**Body**
+- `parentContentId` _{string}_ - the id of the item that the user wants to comment on
+- `parentContentType` _{string}_ - the type of the item that the user wants to comment on ("freet", "comment", or "shared_freet")
+- content _{string}_ - The content of the comment
+
+**Returns**
+
+- A success message
+- The new comment entry
+
+**Throws**
+
+- `403` if the user is not logged in
+- `400` if the `parentContentId` is not given or is not a valid Mongo ID
+- `404` if `parentContentId` does not exist
+- `400` if `parentContentType` is not "freet", "comment", or "shared_freet"
+- `413` if the new comment content is more than 140 characters long
+
+#### `DELETE /api/comments?commentId=COMMENTID` - Delete a comment entry
+
+**Returns**
+
+- A success message
+
+**Throws**
+
+- `403` if the user is not logged in
+- `400` if the `commentId` is not given or is not a valid Mongo ID
+- `404` if  comment does not exist
+- `403` if the user is not the author of the comment
+
 #### `GET /api/likes?parentContentId=PARENTCONTENTID` - Get whether a user has liked an item
 
 **Returns**
