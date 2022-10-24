@@ -57,7 +57,7 @@ export const isValidParentContentType = () => {
   return async (req: Request, res: Response, next: NextFunction) => {
     const parentContentType = req.body.parentContentType as string;
     if (parentContentType !== "freet" && parentContentType !== "comment" && parentContentType !== "shared_freet") {
-      return res.status(400).json({ message: "Comments can only be attatched to freets, shared freets, and other comments." });
+      return res.status(400).json({ message: "Comments can only be attatched to freets, shared freets, and other comments. Parent content type is invalid." });
     }
     next();
   };
@@ -70,7 +70,7 @@ export const isValidParentContentType = () => {
   return async (req: Request, res: Response, next: NextFunction) => {
     const info = (req[reqInfoType])[field];
     if (!info) {
-      return res.status(400).json({message: "required field not given",});
+      return res.status(400).json({message: "Required id of item (parentContentId or commentId) not given.",});
     }
     next();
   };
@@ -84,7 +84,7 @@ export const isValidParentContentType = () => {
   return async (req: Request, res: Response, next: NextFunction) => {
     const info = (req[reqInfoType])[field];
     if (!Types.ObjectId.isValid(info)) {
-      return res.status(400).json({message: 'invalid MongoID',});
+      return res.status(400).json({message: 'Invalid id for a Mongo object.',});
     }
     next();
   };
@@ -100,7 +100,7 @@ export const isValidParentContentType = () => {
     const comment = await CommentCollection.findById(id);
     const sharedFreet = await SharedFreetCollection.findById(id);
     if (!freet && !comment && !sharedFreet) {
-      return res.status(404).json({ message: 'parent content does not exist' });
+      return res.status(404).json({ message: 'Parent content does not exist.' });
     }
     next();
   };

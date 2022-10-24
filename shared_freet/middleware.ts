@@ -31,14 +31,14 @@ const isFreetExists = async (req: Request, res: Response, next: NextFunction) =>
   const {content} = req.body as {content: string};
   if (!content.trim()) {
     res.status(400).json({
-      error: 'Freet content must be at least one character long.'
+      error: 'Shared freet content must be at least one character long.'
     });
     return;
   }
 
   if (content.length > 140) {
     res.status(413).json({
-      error: 'Freet content must be no more than 140 characters.'
+      error: 'Shared freet content must be no more than 140 characters.'
     });
     return;
   }
@@ -78,7 +78,7 @@ const isValidFreetModifier = async (req: Request, res: Response, next: NextFunct
   const userId = freet.authorId._id;
   if (req.session.userId !== userId.toString()) {
     res.status(403).json({
-      error: "Cannot modify delete a shared freet unless you are the freet's creator.",
+      error: "Cannot delete a shared freet unless you are the freet's creator.",
     });
     return;
   }
@@ -100,7 +100,7 @@ const isValidFreetModifier = async (req: Request, res: Response, next: NextFunct
   }
   if (flag === true) {
     res.status(403).json({
-      error: "One or more of the usernames in colaboratingAuthors do not exist.",
+      error: "One or more of the usernames in colaboratingAuthors correspond to users that do not exist.",
     });
     return;
   }

@@ -44,7 +44,7 @@ export const isParentContentTypeValid = () => {
   return async (req: Request, res: Response, next: NextFunction) => {
     const parentContentTypeToCheck = req.body.parentContentType as string;
     if (parentContentTypeToCheck !== "freet" && parentContentTypeToCheck !== "comment" && parentContentTypeToCheck !== "shared_freet") {
-      return res.status(400).json({message: "Parent is not a freet, a comment, or a shared freet."});
+      return res.status(400).json({message: "Parent is not a freet, a comment, or a shared freet. Parent content type is invalid."});
     }
 
     next();
@@ -76,7 +76,7 @@ export const isValidContent = (req: Request, res: Response, next: NextFunction) 
   return async (req: Request, res: Response, next: NextFunction) => {
     const info = (req[reqInfoType]).parentContentId;
     if (!info) {
-      return res.status(400).json({message: "required field not given",});
+      return res.status(400).json({message: "Required parentContentId not given.",});
     }
     next();
   };
@@ -90,7 +90,7 @@ export const isValidContent = (req: Request, res: Response, next: NextFunction) 
   return async (req: Request, res: Response, next: NextFunction) => {
     const info = (req[reqInfoType]).parentContentId;
     if (!Types.ObjectId.isValid(info)) {
-      return res.status(400).json({message: 'invalid MongoID',});
+      return res.status(400).json({message: 'Invalid id for a Mongo object.',});
     }
     next();
   };

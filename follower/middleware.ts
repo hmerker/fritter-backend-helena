@@ -24,7 +24,7 @@ export const doesFollowExist = async (req: Request, res: Response, next: NextFun
   return async (req: Request, res: Response, next: NextFunction) => {
     const info = (req[reqInfoType])[field];
     if (!info) {
-      return res.status(400).json({message: "required field not given"});
+      return res.status(400).json({message: "Required id of item (userId or userFollowed) not given."});
     }
     next();
   };
@@ -38,7 +38,7 @@ export const doesFollowExist = async (req: Request, res: Response, next: NextFun
   return async (req: Request, res: Response, next: NextFunction) => {
     const info = (req[reqInfoType])[field];
     if (!Types.ObjectId.isValid(info)) {
-      return res.status(400).json({message: 'invalid MongoID'});
+      return res.status(400).json({message: 'Invalid id for a Mongo object.'});
     }
     next();
   };

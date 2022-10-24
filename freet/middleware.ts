@@ -92,7 +92,7 @@ const isValidFreetModifier = async (req: Request, res: Response, next: NextFunct
 
   if ((currDate > createdDateCopy) || (lev.distance + numCharsChanged > 10)) {
     res.status(413).json({
-      error: "Cannot modify freets more than 10 characters or more than 4 hours after they are published.",
+      error: "Cannot modify freets more than an edit distance of 10 or more than 4 hours after they are published.",
     });
     return;
   }
