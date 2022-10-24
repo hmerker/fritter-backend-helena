@@ -181,6 +181,16 @@ This renders the `index.html` file that will be used to interact with the backen
 
 - An array of all freets sorted in descending order by date modified
 
+#### `GET /api/freets/feed` - Get freets for the user's feed
+
+**Returns**
+
+- An array of freets that are published by the users that the user of the current session follows
+
+**Throws**
+
+- `403` if the user is not logged in
+
 #### `GET /api/freets?author=USERNAME` - Get freets by author
 
 **Returns**
@@ -192,15 +202,12 @@ This renders the `index.html` file that will be used to interact with the backen
 - `400` if `author` is not given
 - `404` if `author` is not a recognized username of any user
 
-#### `POST /api/freets` - Create a new freet (includes Shared Freet concept)
+#### `POST /api/freets` - Create a new freet
 
 **Body**
 
 - `content` _{string}_ - The content of the freet
-- `credibleSource` _{string}_ - An array of sources that may be included to add credibility
-- `collaboratingAuthors` _{string}_ - An array of the usernames of authors who can edit but did not create the freet (shared freet)
-- `dateTimeBeginEdit` _{DateTime}_ - Earliest time that edits can occur (shared freet)
-- `dateTimeEndEdit` _{DateTime}_ - Latest time that edits can occur (shared freet)
+- `source` _{string}_ - An optional source that may be included to add credibility
 
 **Returns**
 
@@ -212,11 +219,8 @@ This renders the `index.html` file that will be used to interact with the backen
 - `403` if the user is not logged in
 - `400` If the freet content is empty or a stream of empty spaces
 - `413` If the freet content is more than 140 characters long
-- `404` If any of the usernames in `collaboratingAuthors` are not recognized usernames of any users
-- `413` If the `dateTimeBeginEdit` is later than `dateTimeEndEdit`
-- `413` If only 1 or 2 of the `collaboratingAuthors`, `dateTimeBeginEdit`, and `dateTimeEndEdit` fields are populated (either all or none of those fields can be included so a freet is either a shared freet or not a shared freet)
 
-#### `DELETE /api/freets/:freetId?` - Delete an existing freet (includes Shared Freet concept)
+#### `DELETE /api/freets/:freetId?` - Delete an existing freet
 
 **Returns**
 
@@ -225,15 +229,15 @@ This renders the `index.html` file that will be used to interact with the backen
 **Throws**
 
 - `403` if the user is not logged in
-- `403` if the user is not one of the authors of the freet
+- `403` if the user is not the author of the freet
 - `404` if the `freetId` is invalid
 
-#### `PUT /api/freets/:freetId?` - Update an existing freet (includes Shared Freet concept & Edit concept)
+#### `PUT /api/freets/:freetId?` - Update an existing freet (includes what was previously the Edit Button concept)
 
 **Body**
 
 - `content` _{string}_ - The new content of the freet
-- `credibleSource` _{string}_ - An array of sources that may be included to add credibility
+- `source` _{string}_ - An optional source that may be included to add credibility
 
 **Returns**
 
@@ -244,12 +248,78 @@ This renders the `index.html` file that will be used to interact with the backen
 
 - `403` if the user is not logged in
 - `404` if the `freetId` is invalid
-- `403` if the user is not one of the authors of the freet
+- `403` if the user is not the author of the freet
 - `400` if the new freet content is empty or a stream of empty spaces
 - `413` if the new freet content is more than 140 characters long
-- `413` if it has been >= 4 hours since the freet was published and the freet is not a shared freet (edit concept)
-- `413` if >= 10 characters of the freet have already been changed and the freet is not a shared freet (edit concept)
-- `413` if the freet is a shared freet and the current time is < `dateTimeBeginEdit` or >= `dateTimeEndEdit`
+- `413` if it has been > 4 hours since the freet was published
+- `413` if > 10 characters of the freet have already been changed
+
+#### `GET /api/sharedFreets` - Get all the shared freets
+
+**Returns**
+
+- An array of all shared freets sorted in descending order by date modified
+
+#### `GET /api/sharedFreets?author=USERNAME` - Get shared freets by author
+
+**Returns**
+
+- An array of shared freets where one of the authors is the user with username `author`
+
+**Throws**
+
+- `400` if `author` is not given
+- `404` if `author` is not a recognized username of any user
+
+#### `POST /api/sharedFreets` - Create a new shared freet
+
+**Body**
+
+- `content` _{string}_ - The content of the shared freet
+- `collaboratingAuthors` _{string}_ - The usernames of the other users who can edit the shared freet
+
+**Returns**
+
+- A success message
+- A object with the created shared freet
+
+**Throws**
+
+- `403` if the user is not logged in
+- `400` If the shared freet content is empty or a stream of empty spaces
+- `413` If the shared freet content is more than 140 characters long
+- `403` If one or more of the usernames in `collaboratingAuthors` correspond to users that do not exist
+
+#### `DELETE /api/sharedFreets/:sharedFreetId?` - Delete an existing shared freet
+
+**Returns**
+
+- A success message
+
+**Throws**
+
+- `403` if the user is not logged in
+- `403` if the user is not the creator of the shared freet
+- `404` if the `sharedFreetId` is invalid
+
+#### `PUT /api/sharedFreets/:sharedFreetId?` - Update an existing shared freet
+
+**Body**
+
+- `content` _{string}_ - The new content of the shared freet
+
+**Returns**
+
+- A success message
+- An object with the updated shared freet
+
+**Throws**
+
+- `403` if the user is not logged in
+- `404` if the `sharedFreetId` is invalid
+- `403` if the user is not one of the authors of the shared freet
+- `400` if the new shared freet content is empty or a stream of empty spaces
+- `413` if the new shared freet content is more than 140 characters long
 
 #### `POST /api/users/session` - Sign in user
 
