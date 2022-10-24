@@ -349,15 +349,12 @@ This renders the `index.html` file that will be used to interact with the backen
 
 - `403` if user is not logged in
 
-#### `POST /api/users` - Create an new user account (includes Company Account concept)
+#### `POST /api/users` - Create an new user account
 
 **Body**
 
 - `username` _{string}_ - The user's username
 - `password` _{string}_ - The user's password
-- `companyOfEmployment` _{string}_ - The username of the user's company of employemnt
-- `jobTitle` _{string}_ - The user's job title
-- `company` _{boolean}_ - Whether or not the user is a company (company account)
 
 **Returns**
 
@@ -369,18 +366,13 @@ This renders the `index.html` file that will be used to interact with the backen
 - `403` if there is a user already logged in
 - `400` if username or password is in the wrong format
 - `409` if username is already in use
-- `404` if the 'companyOfEmployment` is not a valid username of any company
-- `413` if only 1 of `companyOfEmployment` and `jobTitle` are populated (a user must specify both or neither)
-- `413` if `companyOfEmployment` or `jobTitle` are populated and `company` is true (a user cannot be both a company and an employee)
 
-#### `PUT /api/users` - Update a user's profile (includes Company Account concept)
+#### `PUT /api/users` - Update a user's profile
 
 **Body** _(no need to add fields that are not being changed)_
 
 - `username` _{string}_ - The user's username
 - `password` _{string}_ - The user's password
-- `companyOfEmployment` _{string}_ - The username of the user's company of employemnt
-- `jobTitle` _{string}_ - The user's job title
 
 **Returns**
 
@@ -392,9 +384,6 @@ This renders the `index.html` file that will be used to interact with the backen
 - `403` if the user is not logged in
 - `400` if username or password is in the wrong format
 - `409` if the username is already in use
-- `404` if the 'companyOfEmployment` is not a valid username of any company
-- `413` if only 1 of `companyOfEmployment` and `jobTitle` are populated (a user must specify both or neither)
-- `413` if the `company` field is true and `companyOfEmployment` or `jobTitle` are not empty (a user cannot be both a company and an employee)
 
 #### `DELETE /api/users` - Delete user
 
@@ -406,7 +395,7 @@ This renders the `index.html` file that will be used to interact with the backen
 
 - `403` if the user is not logged in
 
-#### `GET /api/communityScore` - Get the community score of the user that is currently logged-in
+#### `GET /api/communityScores` - Get the community score of the user that is currently logged-in
 
 **Returns**
 
@@ -416,34 +405,33 @@ This renders the `index.html` file that will be used to interact with the backen
 
 - `403` if the user is not logged in
 
-#### `GET /api/credibility?itemId=ITEMID` - Get the credibility of an item
+#### `GET /api/credibilityCounts` - Get the credibility count of the user that is currently logged-in
 
 **Returns**
 
-- The credibility of the given item
+- The logged-in user's credibility count
 
 **Throws**
 
 - `403` if the user is not logged in
-- `404` if the `itemId` is invalid
-- `400` if `itemId` is not given
 
-#### `GET /api/like?itemId=ITEMID` - Get whether a user has liked the current item
+#### `GET /api/likes?parentContentId=PARENTCONTENTID` - Get whether a user has liked an item
 
 **Returns**
 
-- True if user has liked the current item; false otherwise
+- True if user has liked the item; false otherwise
 
 **Throws**
 
 - `403` if the user is not logged in
-- `404` if the `itemId` is invalid
-- `400` if `itemId` is not given
+- `400` if the `parentContentId` is not given or is not a valid Mongo ID
+- `404` if `parentContentId` does not exist
 
-#### `POST /api/like` - Create a new like entry
+#### `POST /api/likes` - Create a new like entry
 
 **Body**
-- `itemId` _{string}_ - the id of the item that the user wants to like
+- `parentContentId` _{string}_ - the id of the item that the user wants to like
+- `parentContentType` _{string}_ - the type of the item that the user wants to like ("freet", "comment", or "shared_freet")
 
 **Returns**
 
@@ -452,10 +440,12 @@ This renders the `index.html` file that will be used to interact with the backen
 **Throws**
 
 - `403` if the user is not logged in
-- `404` if the `itemId` does not exist
-- `404` if the `itemId` has already been liked
+- `400` if the `parentContentId` is not given or is not a valid Mongo ID
+- `404` if `parentContentId` does not exist
+- `400` if `parentContentType` is not "freet", "comment", or "shared_freet"
+- `404` if the `parentContentId` has already been liked
 
-#### `DELETE /api/like?itemId=ITEMID` - Delete a like
+#### `DELETE /api/likes?parentContentId=PARENTCONTENTID` - Delete a like entry
 
 **Returns**
 
@@ -464,25 +454,26 @@ This renders the `index.html` file that will be used to interact with the backen
 **Throws**
 
 - `403` if the user is not logged in
-- `404` if the `itemId` is invalid
-- `400` if `itemId` is not given
+- `400` if the `parentContentId` is not given or is not a valid Mongo ID
 
-#### `GET /api/report?itemId=ITEMID` - Get whether a user has reported the current item
+#### `GET /api/reports?parentContentId=PARENTCONTENTID` - Get whether a user has reported an item
 
 **Returns**
 
-- True if user has reported the current item; false otherwise
+- True if user has reported the item; false otherwise
 
 **Throws**
 
 - `403` if the user is not logged in
-- `404` if the `itemId` is invalid
-- `400` if `itemId` is not given
+- `400` if the `parentContentId` is not given or is not a valid Mongo ID
+- `404` if `parentContentId` does not exist
 
-#### `POST /api/report` - Create a new report entry
+#### `POST /api/reports` - Create a new report entry
 
 **Body**
-- `itemId` _{string}_ - the id of the item that the user wants to report
+- `parentContentId` _{string}_ - the id of the item that the user wants to report
+- `parentContentType` _{string}_ - the type of the item that the user wants to report ("freet", "comment", or "shared_freet")
+- `content` _{string}_ - the content of the report (why the user wants to report the item)
 
 **Returns**
 
@@ -491,10 +482,12 @@ This renders the `index.html` file that will be used to interact with the backen
 **Throws**
 
 - `403` if the user is not logged in
-- `404` if the `itemId` does not exist
-- `413` if the `itemId` has already been reported
+- `400` if the `parentContentId` is not given or is not a valid Mongo ID
+- `404` if `parentContentId` does not exist
+- `400` if `parentContentType` is not "freet", "comment", or "shared_freet"
+- `404` if the `parentContentId` has already been reported
 
-#### `DELETE /api/report?itemId=ITEMID` - Delete a report
+#### `DELETE /api/reports?parentContentId=PARENTCONTENTID` - Delete a report
 
 **Returns**
 
@@ -503,10 +496,9 @@ This renders the `index.html` file that will be used to interact with the backen
 **Throws**
 
 - `403` if the user is not logged in
-- `404` if the `itemId` is invalid
-- `400` if `itemId` is not given
+- `400` if the `parentContentId` is not given or is not a valid Mongo ID
 
-#### `GET /api/follower?userId=USERID` - Get a user's follower information
+#### `GET /api/followers?userId=USERID` - Get a user's follower information
 
 **Returns**
 
@@ -515,11 +507,9 @@ This renders the `index.html` file that will be used to interact with the backen
 
 **Throws**
 
-- `403` if the user is not logged in
-- `404` if the `userId` is invalid
-- `400` if `userId` is not given
+- `400` if the `userId` is not given or is not a valid Mongo ID
 
-#### `POST /api/follower` - Follow a specified user
+#### `POST /api/followers` - Follow a specified user
 
 **Body**
 - `userFollowed` _{string}_ - username of the user that the given user would like to follow
@@ -532,10 +522,9 @@ This renders the `index.html` file that will be used to interact with the backen
 **Throws**
 
 - `403` if the user is not logged in
-- `404` if `userFollowed` is invalid
-- `413` if the given user already follows `userFollowed`
+- `404` if the user already follows `userFollowed`
 
-#### `DELETE /api/follower?followerId=FOLLOWERID` - Delete a follower entry
+#### `DELETE /api/followers?followerId=FOLLOWERID` - Delete a follower entry
 
 **Returns**
 
@@ -544,7 +533,7 @@ This renders the `index.html` file that will be used to interact with the backen
 **Throws**
 
 - `403` if the user is not logged in
-- `400` if `followerId` is not given
+- `400` if the `userId` is not given or is not a valid Mongo ID
 
 
 
